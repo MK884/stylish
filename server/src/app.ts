@@ -17,9 +17,14 @@ app.use(
   })
 );
 
-// user routes
+// middlewares
+import { errorHandler } from './middlewares';
 
+
+// user routes
 import { userRouter } from './routes';
 app.use('/api/v1/user', userRouter);
 
+// @ts-ignore
+app.use(errorHandler);
 export default app;

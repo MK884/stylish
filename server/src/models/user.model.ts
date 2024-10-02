@@ -13,10 +13,12 @@ const refreshTokenExpires = process.env.REFRESH_TOKEN_EXPIRY || '2d';
 
 const UserSchema = new mongoose.Schema<IUser>(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String },
+    userName: {type: String, required: true, unique: true, index: true },
     email: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
+    firstName: { type: String },
+    phone: { type: Number },
+    lastName: { type: String },
     avatarUrl: { type: String },
     refreshToken: { type: String },
   },
@@ -65,4 +67,4 @@ UserSchema.methods.generateRefreshToken = function () {
 
 const User = mongoose.model<IUser>('User', UserSchema);
 
-export default User;
+export { User };

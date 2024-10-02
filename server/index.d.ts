@@ -1,13 +1,15 @@
 interface IUser {
-    firstName:string;
+    userName: string;
+    firstName?:string;
     lastName?:string;
     email:string;
     password:string;
+    phone?:number;
     avatarUrl?:string;
     refreshToken?:string;
-    // isPasswordCorrect: (password:string) => Promise<boolean>;
-    // generateAccessToken: Function;
-    // generateRefreshToken: Function;
+    isPasswordCorrect: (password:string) => Promise<boolean>;
+    generateAccessToken: Function;
+    generateRefreshToken: Function;
 }
 
 interface UserToken {
