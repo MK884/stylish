@@ -1,0 +1,15 @@
+{
+  "name": "stylish",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "formate": "prettier --write \"**/*.{ts,js,tsx,jsx,md}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "prettier": "^3.3.3"
+  }
+}
