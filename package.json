@@ -11,5 +11,8 @@
   "description": "",
   "dependencies": {
     "prettier": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/multer": "^1.4.12"
   }
 }

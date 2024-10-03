@@ -6,8 +6,17 @@ import { ApiError } from '../utils';
 const accessTokenSecret =
   process.env.ACCESS_TOKEN_SECRET || 'hdgasuydyaw89dyash';
 
-export const verifyJwt = (req: CustomeRequest, res: Response, next: NextFunction) => {
+export const verifyJwt = (
+  req: CustomeRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const BearerToken = req?.headers.authorization ?? req.cookies?.accessToken;
+
+  // Check if there's a token and it's using the Bearer scheme
+  if (!BearerToken || !BearerToken.startsWith('Bearer ')) {
+    throw new ApiError(401, 'Unauthorized request: No token provided');
+  }
 
   const token = BearerToken.split(' ')?.[1];
 
@@ -22,9 +31,7 @@ export const verifyJwt = (req: CustomeRequest, res: Response, next: NextFunction
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
-      return res
-        .status(403)
-        .json(new ApiError(403, 'Inavlid Token', error?.message));
+      res.status(403).json(new ApiError(403, 'Inavlid Token', error?.message));
     }
   }
 };

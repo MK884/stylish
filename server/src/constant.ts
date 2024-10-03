@@ -11,8 +11,5 @@ export const cookieOpt: CookieOptions = {
 };
 
 export interface CustomeRequest extends Request {
-  files?: {
-    [fieldname: string]: Express.Multer.File[];
-  };
   user?: UserToken;
 }
