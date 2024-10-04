@@ -1,32 +1,52 @@
+interface IUser {
+  userName: string;
+  firstName?: string;
+  lastName?: string;
+  email: string;
+  password: string;
+  phone?: number;
+  avatarUrl?: string;
+  refreshToken?: string;
+  isPasswordCorrect: (password: string) => Promise<boolean>;
+  generateAccessToken: Function;
+  generateRefreshToken: Function;
+}
 
-  interface IUser {
-    userName: string;
-    firstName?: string;
-    lastName?: string;
-    email: string;
-    password: string;
-    phone?: number;
-    avatarUrl?: string;
-    refreshToken?: string;
-    isPasswordCorrect: (password: string) => Promise<boolean>;
-    generateAccessToken: Function;
-    generateRefreshToken: Function;
+interface UserToken {
+  _id: string;
+  email: string;
+}
+
+namespace Express {
+  interface Request {
+    user: UserToken;
   }
+}
 
-  interface UserToken {
-    _id: string;
-    email: string;
-  }
+type colors =
+  | 'black'
+  | 'white'
+  | 'blue'
+  | 'brown'
+  | 'copper'
+  | 'gold'
+  | 'green'
+  | 'grey'
+  | 'navy'
+  | 'neutral'
+  | 'orange';
 
-  namespace Express {
-    interface Request {
-      user: UserToken;
-    }
-  }
-
-type colors = 'black' | 'white' | 'blue' | 'brown' | 'copper' | 'gold' | 'green' | 'grey' | 'navy' | 'neutral' | 'orange' ;
-
-type category = 'shirts' | 'jeans' | 'jacket' | 'top' | 'skirts' | 'pants' | 'dresses' | 't-shirts' | 'hats' | 'socks'
+type category =
+  | 'shirts'
+  | 'jeans'
+  | 'jacket'
+  | 'top'
+  | 'skirts'
+  | 'pants'
+  | 'dresses'
+  | 't-shirts'
+  | 'hats'
+  | 'socks';
 
 interface ICategory {
   name: category;
@@ -34,9 +54,13 @@ interface ICategory {
 
 interface IStore {
   name: string;
-  description:string;
-  avatarUrl:string;
-  thumbnailUrl:string;
+  description: string;
+  avatarUrl: string;
+  thumbnailUrl: string;
+}
+
+interface IProductImage {
+  src: string;
 }
 
 // Men's Clothing

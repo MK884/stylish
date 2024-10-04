@@ -21,13 +21,14 @@ app.use(
 import { errorHandler } from './middlewares';
 
 
-// user routes
-import { userRouter, storeRoute, categoryRoute } from './routes';
+// routes
+import { userRouter, storeRoute, categoryRoute, productRouter } from './routes';
 
 
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/store', storeRoute);
 app.use('/api/v1/category', categoryRoute);
+app.use('/api/v1/product', productRouter);
 
 // @ts-ignore
 app.use(errorHandler);

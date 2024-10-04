@@ -3,13 +3,14 @@ import mongoose from 'mongoose';
 export interface IProduct {
   title: string;
   description: string;
-  category: mongoose.Types.ObjectId;
+  category: category;
   size: Array<number>;
   store: mongoose.Types.ObjectId;
   price: number;
-  discount: number;
+  discount?: number;
   color: Array<colors>;
-  rating: number;
+  rating?: number;
+  productImg: IProductImage[];
 }
 
 const productSchema = new mongoose.Schema<IProduct>(
@@ -51,8 +52,19 @@ const productSchema = new mongoose.Schema<IProduct>(
       default: 0,
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'categories',
+      type: String,
+      enum: [
+        'shirts',
+        'jeans',
+        'jacket',
+        'top',
+        'skirts',
+        'pants',
+        'dresses',
+        't-shirts',
+        'hats',
+        'socks',
+      ],
     },
     store: {
       type: mongoose.Schema.Types.ObjectId,
@@ -61,6 +73,13 @@ const productSchema = new mongoose.Schema<IProduct>(
     size: {
       type: [Number],
     },
+    productImg: [
+      {
+        src: {
+          type: String,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
