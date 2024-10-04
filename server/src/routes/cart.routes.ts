@@ -7,9 +7,9 @@ const cartRouter = Router();
 
 cartRouter.use(verifyJwt);
 cartRouter.route('/').get(getAllCartOfUser);
-cartRouter.route('/:productId').get(addToCart);
-cartRouter.route('/:productId').delete(removeFromCart);
+cartRouter.route('/add/:productId/:qty?').get(addToCart);
+cartRouter.route('/remove/:productId').delete(removeFromCart);
 cartRouter.route('/').delete(clearCart);
 
 
-export { cartRouter}
+export { cartRouter}    

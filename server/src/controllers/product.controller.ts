@@ -50,11 +50,18 @@ const getAllProducts = async (req: Request, res: Response) => {
       },
     ]);
 
+    const total = await Product.find().countDocuments();
+
+    const data = {
+      ...products,
+      total,
+    }
+
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'fetch successfully',
-      data: products,
+      data
     });
   } catch (error) {
     if (error instanceof Error) {

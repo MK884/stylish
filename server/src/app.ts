@@ -22,14 +22,15 @@ import { errorHandler } from './middlewares';
 
 
 // routes
-import { userRouter, storeRoute, categoryRoute, productRouter } from './routes';
+import { userRouter, storeRoute, categoryRoute, productRouter, cartRouter } from './routes';
 
 
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/store', storeRoute);
 app.use('/api/v1/category', categoryRoute);
 app.use('/api/v1/product', productRouter);
+app.use('/api/v1/cart', cartRouter);
 
 // @ts-ignore
-app.use(errorHandler);
+// app.use(errorHandler);
 export default app;
