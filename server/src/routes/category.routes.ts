@@ -5,6 +5,6 @@ import { getAllCategories } from "../controllers";
 const categoryRoute = Router();
 
 categoryRoute.use(verifyJwt);
-categoryRoute.route('/category').get(getAllCategories);
+categoryRoute.route('/').get(getAllCategories);
 
 export { categoryRoute }
