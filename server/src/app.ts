@@ -22,8 +22,11 @@ import { errorHandler } from './middlewares';
 
 
 // user routes
-import { userRouter } from './routes';
+import { userRouter, storeRoute } from './routes';
+
+
 app.use('/api/v1/user', userRouter);
+app.use('/api/v1/store', storeRoute);
 
 // @ts-ignore
 app.use(errorHandler);
