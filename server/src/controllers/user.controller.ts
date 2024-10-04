@@ -7,7 +7,7 @@ import {
   uploadOnCloudinary,
 } from '../utils';
 import { User } from '../models';
-import { cookieOpt, CustomeRequest } from '../constant';
+import { cookieOpt } from '../constant';
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
 
 const registerUserschema = z.object({
@@ -31,14 +31,16 @@ const registerUser = async (
   const userInput = registerUserschema.safeParse(req?.body);
 
   if (!userInput?.success) {
-    throw new ApiError(
-      400,
-      'Validation failed',
-      userInput?.error?.issues?.map((issue) => ({
+    res.status(400).json({
+      statusCode: 400,
+      success: false,
+      message: 'validation failed',
+      error: userInput?.error?.issues?.map((issue) => ({
         path: issue?.path,
         message: issue?.message,
-      }))
-    );
+      })),
+    });
+    return;
   }
 
   const { email, password, userName } = userInput?.data;
@@ -49,7 +51,12 @@ const registerUser = async (
     const isExist = await User.findOne({ userName });
 
     if (isExist) {
-      throw new ApiError(406, 'username already taken');
+      res.status(406).json({
+        statusCode: 406,
+        success: false,
+        message: 'username already taken',
+      });
+      return;
     }
 
     const user = await User.create({ userName, email, password });
@@ -59,12 +66,20 @@ const registerUser = async (
       email: user.email,
     };
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, 'User created successfully', userData));
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'user created successfully',
+      data: userData,
+    });
   } catch (error) {
     if (error instanceof Error) {
-      throw new ApiError(500, error.message, error);
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
     }
   }
 };
@@ -76,68 +91,93 @@ const loginUser = async (
   const userInput = loginUserSchema.safeParse(req?.body);
 
   if (!userInput?.success) {
-    res.status(400).json(
-      new ApiError(
-        400,
-        'Validation failed',
-        userInput?.error?.issues.map((issue) => ({
-          path: issue?.path,
-          message: issue?.message,
-        }))
-      )
-    );
-  } else {
-    const { email, password } = userInput?.data;
+    res.status(400).json({
+      statusCode: 400,
+      success: false,
+      message: 'validation failed',
+      error: userInput?.error?.issues?.map((issue) => ({
+        path: issue?.path,
+        message: issue?.message,
+      })),
+    });
+    return;
+  }
+  const { email, password } = userInput?.data;
 
-    try {
-      const user = await User.findOne({ email });
+  try {
+    const user = await User.findOne({ email: email });
 
-      if (!user) {
-        throw new ApiError(404, 'User not found');
-      }
+    if (!user) {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'user not found',
+      });
+      return;
+    }
 
-      const isPasswordCorrect = await user?.isPasswordCorrect(password);
+    const isPasswordCorrect = await user?.isPasswordCorrect(password);
 
-      if (!isPasswordCorrect) {
-        throw new ApiError(403, 'incorrect user credentials');
-      }
+    if (!isPasswordCorrect) {
+      res.status(403).json({
+        statusCode: 403,
+        success: false,
+        message: 'incorrect user credentials',
+      });
+      return;
+    }
 
-      const accessToken = user?.generateAccessToken();
-      const refreshToken = user?.generateRefreshToken();
+    const accessToken = user?.generateAccessToken();
+    const refreshToken = user?.generateRefreshToken();
 
-      if (!accessToken || !refreshToken)
-        throw new ApiError(500, 'Somthing went wrong while generating tokens');
+    if (!accessToken || !refreshToken) {
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: 'somthing went wrong while generating tokens',
+      });
+      return;
+    }
 
-      user.refreshToken = refreshToken;
+    user.refreshToken = refreshToken;
 
-      user.save({ validateBeforeSave: false });
+    user.save({ validateBeforeSave: false });
 
-      const userData = {
-        email: user?.email,
-        phone: user?.phone,
-        avatarUrl: user?.avatarUrl,
-        firstName: user?.firstName,
-        lastName: user?.lastName,
-        userName: user?.userName,
-        refreshToken,
-        accessToken,
-      };
+    const userData = {
+      email: user?.email,
+      phone: user?.phone,
+      avatarUrl: user?.avatarUrl,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      userName: user?.userName,
+      refreshToken,
+      accessToken,
+    };
 
-      res
-        .status(200)
-        .cookie('accessToken', accessToken, cookieOpt)
-        .cookie('refreshToken', refreshToken, cookieOpt)
-        .json(new ApiResponse(200, 'Login successful', userData));
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new ApiError(500, error.message, error);
-      }
+    res
+      .status(200)
+      .cookie('accessToken', accessToken, cookieOpt)
+      .cookie('refreshToken', refreshToken, cookieOpt)
+      .json({
+        statusCode: 200,
+        success: true,
+        message: 'login successful',
+        data: userData,
+      });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
     }
   }
 };
 
 const logoutUser = async (
-  req: CustomeRequest,
+  req: Request,
   res: Response
 ): Promise<void | undefined> => {
   const userId = req?.user?._id;
@@ -150,7 +190,12 @@ const logoutUser = async (
     });
   } catch (error) {
     if (error instanceof Error) {
-      throw new ApiError(500, error.message, error);
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
     }
   }
 
@@ -158,11 +203,15 @@ const logoutUser = async (
     .status(200)
     .clearCookie('accessToken', cookieOpt)
     .clearCookie('refreshToken', cookieOpt)
-    .json(new ApiResponse(202, 'Logout successfully'));
+    .json({
+      statusCode: 202,
+      success: true,
+      message: 'logged out successfully',
+    });
 };
 
 const updateUser = async (
-  req: CustomeRequest,
+  req: Request,
   res: Response
 ): Promise<void | undefined> => {
   const { email, firstName, lastName, phone } = req?.body;
@@ -171,7 +220,14 @@ const updateUser = async (
 
   const isEmpty = !(email || firstName || lastName || phone || avatar);
 
-  if (isEmpty) throw new ApiError(400, 'At least one field must be provided');
+  if (isEmpty) {
+    res.status(400).json({
+      statusCode: 400,
+      success: false,
+      message: 'at least one field must be provided',
+    });
+    return;
+  }
 
   const userInput: Partial<IUser> = {};
 
@@ -183,8 +239,14 @@ const updateUser = async (
   try {
     if (avatar) {
       const cloudResponse = await uploadOnCloudinary(avatar);
-      if (!cloudResponse?.url)
-        throw new ApiError(500, 'Failed to upload avatar');
+      if (!cloudResponse?.url) {
+        res.status(500).json({
+          statusCode: 500,
+          success: false,
+          message: 'failed to upload avatar',
+        });
+        return;
+      }
 
       userInput.avatarUrl = cloudResponse?.url;
     }
@@ -199,27 +261,44 @@ const updateUser = async (
       }
     );
 
+    if (!user) {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'user not found',
+      });
+      return;
+    }
+
     const userData = {
-      email: user?.email,
-      phone: user?.phone,
-      avatarUrl: user?.avatarUrl,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      userName: user?.userName,
+      email: user.email,
+      phone: user.phone,
+      avatarUrl: user.avatarUrl,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userName: user.userName,
     };
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, 'User updated successfully', userData));
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'user updated successfully',
+      data: userData,
+    });
   } catch (error) {
     if (error instanceof Error) {
-      throw new ApiError(500, error.message, error);
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
     }
   }
 };
 
 const deleteUser = async (
-  req: CustomeRequest,
+  req: Request,
   res: Response
 ): Promise<void | undefined> => {
   const userId = req?.user?._id;
@@ -237,10 +316,23 @@ const deleteUser = async (
       await deleteSingleAsset(deletedUser?.avatarUrl);
     }
 
-    res.status(202).json(new ApiResponse(202, 'user deleted successfully'));
+    res
+      .status(202)
+      .clearCookie('accessToken', cookieOpt)
+      .clearCookie('refreshToken', cookieOpt)
+      .json({
+        statusCode: 202,
+        success: true,
+        message: 'user deleted successfully',
+      });
   } catch (error) {
     if (error instanceof Error) {
-      throw new ApiError(500, error.message, error);
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
     }
   }
 };
@@ -251,7 +343,13 @@ const refreshUserToken = async (
 ): Promise<void | undefined> => {
   const token = req?.body?.refreshToken || req?.cookies?.refreshToken;
 
-  if (!token) throw new ApiError(401, 'Unautherized Request from Server');
+  if (!token) {
+    res.status(401).json({
+      statusCode: 401,
+      success: false,
+      message: 'unautherized request from server',
+    });
+  }
 
   try {
     const userClaim = jwt.verify(token, refreshTokenSecret) as UserToken;
@@ -277,11 +375,19 @@ const refreshUserToken = async (
       .json(new ApiResponse(200, 'success', { accessToken, refreshToken }));
   } catch (error) {
     if (error instanceof TokenExpiredError) {
-       res
-          .status(403)
-          .json(new ApiError(403, 'Invalid Token', error));
-  }
-   res.json(new ApiError(500, 'somthing went wrong'));
+      res.status(403).json({
+        statusCode: 403,
+        success: false,
+        message: 'invalid token',
+        error,
+      });
+    }
+    res.status(500).json({
+      statusCode: 500,
+      success: false,
+      message: 'somthing went wrong',
+      error,
+    });
   }
 };
 

@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema<IUser>(
   {
     userName: {type: String, required: true, unique: true, index: true },
     email: { type: String, required: true },
-    password: { type: String, required: true, select: false },
+    password: { type: String, required: true },
     firstName: { type: String },
     phone: { type: Number },
     lastName: { type: String },
@@ -31,8 +31,8 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
-UserSchema.methods.isPasswordCorrect = async function (password: string) {
-  return await bcrypt.compare(password, this.password);
+UserSchema.methods.isPasswordCorrect = async function (password: string) { 
+  return await bcrypt.compare(password, this?.password);
 };
 
 UserSchema.methods.generateAccessToken = function () {

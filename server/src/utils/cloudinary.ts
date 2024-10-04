@@ -12,12 +12,12 @@ cloudinary.config({
 const uploadOnCloudinary = async (loaclFilePath: string) => {
     try {
         if (!loaclFilePath)
-            throw new ApiError(404, 'LocalFilePath not specified');
+            return null;
 
         const response = await cloudinary.uploader
             .upload(loaclFilePath, { resource_type: 'auto' })
             .catch((e) => {
-                throw new ApiError(500, 'Cloudinary upload failed', e);
+                throw new Error(e);
             });
 
         fs.unlinkSync(loaclFilePath);
@@ -31,12 +31,14 @@ const uploadOnCloudinary = async (loaclFilePath: string) => {
 
 const deleteSingleAsset = async (public_uri: string) => {
     try {
-        if (!public_uri) throw new ApiError(404, 'Public_uri not specified');
+        if (!public_uri){
+            return null
+        } 
 
         const response = await cloudinary.uploader
             .destroy(public_uri)
             .catch((e) => {
-                throw new ApiError(500, 'Cloudinary delete failed', e);
+                throw new Error(e);
             });
 
         return response;

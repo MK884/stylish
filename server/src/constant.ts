@@ -10,6 +10,4 @@ export const cookieOpt: CookieOptions = {
   sameSite: 'none',
 };
 
-export interface CustomeRequest extends Request {
-  user?: UserToken;
-}
+
