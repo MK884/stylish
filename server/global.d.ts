@@ -33,7 +33,7 @@ type colors =
   | 'green'
   | 'grey'
   | 'navy'
-  | 'neutral'
+  | 'pink'
   | 'orange';
 
 type category =

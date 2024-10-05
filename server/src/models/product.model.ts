@@ -11,6 +11,7 @@ export interface IProduct {
   color: Array<colors>;
   rating?: number;
   productImg: IProductImage[];
+  quantity: number;
 }
 
 const productSchema = new mongoose.Schema<IProduct>(
@@ -35,7 +36,7 @@ const productSchema = new mongoose.Schema<IProduct>(
         'green',
         'grey',
         'navy',
-        'neutral',
+        'pink',
         'orange',
       ],
     },
@@ -72,6 +73,10 @@ const productSchema = new mongoose.Schema<IProduct>(
     },
     size: {
       type: [Number],
+    },
+    quantity: {
+      type: Number,
+      default:5
     },
     productImg: [
       {
