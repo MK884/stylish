@@ -10,3 +10,18 @@ type Categories =
   | "jewelery"
   | "men's clothing"
   | "women's clothing";
+
+  interface Token {
+    accessToken: string;
+    refreshToken: string;
+  }
+
+  interface UserData extends Token {
+    userName: string;
+    avatarUrl?: string;
+}
+
+interface AuthSlice {
+    isAuth: boolean;
+    user : UserData | null;
+}
