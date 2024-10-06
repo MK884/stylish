@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   deleteUser,
+  getCurrentUser,
   loginUser,
   logoutUser,
   refreshUserToken,
@@ -20,5 +21,6 @@ userRouter.use(verifyJwt);
 userRouter.route('/logout').get(logoutUser);
 userRouter.route('/update').patch(upload.single('avatar'), updateUser);
 userRouter.route('/delete').delete(deleteUser);
+userRouter.route('/').get(getCurrentUser);
 
 export { userRouter };

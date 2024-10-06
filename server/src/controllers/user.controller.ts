@@ -46,7 +46,7 @@ const registerUser = async (
   const { email, password, userName: userN } = userInput?.data;
 
   // check if user is already registered by username
-  
+
   const userName = `@${userN}`.toLowerCase();
 
   try {
@@ -60,7 +60,6 @@ const registerUser = async (
       });
       return;
     }
-
 
     const user = await User.create({ userName, email, password });
 
@@ -392,6 +391,38 @@ const refreshUserToken = async (
   }
 };
 
+const getCurrentUser = async (req: Request, res: Response) => {
+  const userId = req?.user?._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    const data: Partial<IUser> = {
+      userName: user?.userName,
+      publicName: user?.publicName,
+      email: user?.email,
+      phone: user?.phone,
+      avatarUrl: user?.avatarUrl,
+    };
+
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'fetch user',
+      data,
+    });
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: 'somthing went wrong',
+        error,
+      });
+    }
+  }
+};
+
 export {
   registerUser,
   loginUser,
@@ -399,4 +430,5 @@ export {
   deleteUser,
   updateUser,
   refreshUserToken,
+  getCurrentUser,
 };
