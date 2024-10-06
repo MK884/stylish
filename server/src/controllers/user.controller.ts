@@ -13,7 +13,7 @@ import jwt, { TokenExpiredError } from 'jsonwebtoken';
 const registerUserschema = z.object({
   userName: z.string().min(1),
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string(),
 });
 
 const loginUserSchema = z.object({
@@ -43,9 +43,11 @@ const registerUser = async (
     return;
   }
 
-  const { email, password, userName } = userInput?.data;
+  const { email, password, userName: userN } = userInput?.data;
 
   // check if user is already registered by username
+  
+  const userName = `@${userN}`.toLowerCase();
 
   try {
     const isExist = await User.findOne({ userName });
@@ -58,6 +60,7 @@ const registerUser = async (
       });
       return;
     }
+
 
     const user = await User.create({ userName, email, password });
 
@@ -381,6 +384,7 @@ const refreshUserToken = async (
         message: 'invalid token',
         error,
       });
+      return;
     }
     res.status(500).json({
       statusCode: 500,
