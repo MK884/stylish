@@ -1,20 +1,14 @@
-import { Stack } from "expo-router";
-import React from "react";
+import { store } from '@/store';
+import { Slot } from 'expo-router';
+import React from 'react';
+import { Provider } from 'react-redux';
 
-const _layout = () => {
+const RootLayout = () => {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="index" />
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="(screen)" />
-      <Stack.Screen name="+not-found" />
-    </Stack>
+    <Provider store={store}>
+      <Slot />
+    </Provider>
   );
 };
 
-export default _layout;
+export default RootLayout;

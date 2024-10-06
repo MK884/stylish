@@ -17,6 +17,7 @@ export interface ButtonProps {
   onPress?: (e: GestureResponderEvent) => void;
   textStyle?: TextProps["style"];
   tailwindClass?: string;
+  disabled?: boolean;
 }
 
 export interface TextInputProps {

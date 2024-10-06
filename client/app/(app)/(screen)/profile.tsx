@@ -3,10 +3,30 @@ import { Button, MyText, TextInput } from "@/ui";
 import React from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
 import Icon from "@expo/vector-icons/FontAwesome";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { logout as userLogout } from "@/services/users";
+import { usePrivateAxios } from "@/services/api";
+import { logout, useUser } from "@/features/auth/authSlice";
 
 const Profile = () => {
   let paddingHorizontal = 24;
   const [value, setValue] = React.useState("");
+
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(useUser)
+  const axios = usePrivateAxios();
+
+  const onLogout = async () => {
+    try {
+      await userLogout(axios);
+
+      dispatch(logout());
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
   return (
     <ScrollView className="bg-[#ffffff] flex-1 mb-5">
       <View className="flex-1 flex gap-12">
@@ -18,7 +38,7 @@ const Profile = () => {
             className="h-40 w-40 rounded-full self-center"
           />
           <MyText className="text-center text-4xl font-extrabold">
-            Ava Johnson
+            {user?.userName}
           </MyText>
         </View>
         <View>
@@ -69,7 +89,7 @@ const Profile = () => {
           <Divider />
         </View>
         <View style={{ paddingHorizontal }}>
-          <Button title="Logout"  tailwindClass="bg-transparent border rounded-2xl border-[#A8A8A9] py-3" textStyle={{color:'red'}} />
+          <Button title="Logout"  tailwindClass="bg-transparent border rounded-2xl border-[#A8A8A9] py-3" textStyle={{color:'red'}} onPress={onLogout}/>
         </View>
       </View>
     </ScrollView>
