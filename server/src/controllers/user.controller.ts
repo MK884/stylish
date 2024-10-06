@@ -150,8 +150,7 @@ const loginUser = async (
       email: user?.email,
       phone: user?.phone,
       avatarUrl: user?.avatarUrl,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
+      publicName: user?.publicName,
       userName: user?.userName,
       refreshToken,
       accessToken,
@@ -217,11 +216,11 @@ const updateUser = async (
   req: Request,
   res: Response
 ): Promise<void | undefined> => {
-  const { email, firstName, lastName, phone } = req?.body;
+  const { email, publicName, phone } = req?.body;
 
   const avatar = req?.file?.path;
 
-  const isEmpty = !(email || firstName || lastName || phone || avatar);
+  const isEmpty = !(email || publicName || phone || avatar);
 
   if (isEmpty) {
     res.status(400).json({
@@ -235,8 +234,7 @@ const updateUser = async (
   const userInput: Partial<IUser> = {};
 
   if (email) userInput.email = email;
-  if (firstName) userInput.firstName = firstName;
-  if (lastName) userInput.lastName = lastName;
+  if (publicName) userInput.publicName = publicName;
   if (phone) userInput.phone = phone;
 
   try {
@@ -277,8 +275,7 @@ const updateUser = async (
       email: user.email,
       phone: user.phone,
       avatarUrl: user.avatarUrl,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      publicName: user.publicName,
       userName: user.userName,
     };
 
