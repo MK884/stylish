@@ -25,3 +25,13 @@ interface AuthSlice {
     isAuth: boolean;
     user : UserData | null;
 }
+
+interface IUser {
+  userName: string;
+  publicName?: string;
+  email: string;
+  password: string;
+  phone?: string;
+  avatarUrl?: string;
+  refreshToken?: string;
+}

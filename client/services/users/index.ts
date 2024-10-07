@@ -83,20 +83,46 @@ const register = async ({
 };
 
 const update = async ({
-  email,
-  firstName,
-  lastName,
-  phone,
-  avatar,
+  data,
   axios,
 }: {
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: number;
-  avatar?: File;
+  data: Partial<IUser>;
   axios: AxiosInstance;
-}) => {};
+}) => {
+
+  const isEmpty = !( data?.email || data?.phone || data?.publicName || data?.avatarUrl );
+
+  if(isEmpty) return ;
+  
+  const form = new FormData();
+  if (data?.email) form.append('email', data.email);
+  if (data?.publicName) form.append('publicName', data.publicName);
+  if (data?.phone) form.append('phone', data.phone);
+  if (data?.avatarUrl) form.append('avatar', data.avatarUrl);
+
+  console.log('form data =>',{...form})
+
+  try {
+    const response = await axios.patch('/user/update', form, {
+      headers:{
+          'Content-Type':'multipart/form-data'
+      }
+  });
+
+    return response?.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      // server error
+      const serverError = error?.response?.data;
+
+      console.log(`server error in update: ${serverError?.message}`);
+
+      throw new Error(serverError?.message || 'server error in update');
+    }
+    console.error('update error', error);
+    throw new Error('update error due to some reasone');
+  }
+};
 
 const deleteUser = async (axios: AxiosInstance) => {
   if (!axios) return;
@@ -119,4 +145,22 @@ const deleteUser = async (axios: AxiosInstance) => {
   }
 };
 
-export { login, logout, register, update, deleteUser };
+const getUser = async (axios: AxiosInstance) => {
+  try {
+    const response = await axios.get('/user');
+    return response?.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      // server error
+      const serverError = error?.response?.data;
+
+      console.log(`server error in getUser: ${serverError?.message}`);
+
+      throw new Error(serverError?.message || 'server error in getUser');
+    }
+    console.error('getUser error', error);
+    throw new Error('getUser error due to some reasone');
+  }
+};
+
+export { login, logout, register, update, deleteUser, getUser };

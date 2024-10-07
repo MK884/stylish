@@ -113,7 +113,7 @@ const loginUser = async (
       res.status(404).json({
         statusCode: 404,
         success: false,
-        message: 'user not found',
+        message: 'email not found',
       });
       return;
     }
@@ -219,6 +219,8 @@ const updateUser = async (
 
   const avatar = req?.file?.path;
 
+  const userId = req?.user?._id;
+
   const isEmpty = !(email || publicName || phone || avatar);
 
   if (isEmpty) {
@@ -251,6 +253,17 @@ const updateUser = async (
       userInput.avatarUrl = cloudResponse?.url;
     }
 
+    const data = await User.findById(userId);
+
+    if (!data) {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'user not found',
+      });
+      return;
+    }
+
     const user = await User.findByIdAndUpdate(
       req?.user?._id,
       {
@@ -268,6 +281,10 @@ const updateUser = async (
         message: 'user not found',
       });
       return;
+    }
+
+    if (data?.avatarUrl) {
+      await deleteSingleAsset(data?.avatarUrl);
     }
 
     const userData = {

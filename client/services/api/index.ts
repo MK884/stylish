@@ -4,14 +4,14 @@ import axios from 'axios';
 import { useEffect } from 'react';
 
 const publicAxios = axios.create({
-  baseURL: 'http://192.168.0.104:3000/api/v1',
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 const privateAxios = axios.create({
-  baseURL: 'http://192.168.0.104:3000/api/v1',
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },

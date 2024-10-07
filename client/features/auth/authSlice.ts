@@ -14,6 +14,11 @@ const authSlice = createSlice({
       state.isAuth = true;
       state.user = action?.payload;
     },
+    changeAvatar: (state, action: PayloadAction<string>) => {
+      if(state?.user){
+        state.user.avatarUrl = action?.payload
+      }
+    },
     logout: (state) => {
       state.isAuth = false;
       state.user = null;
@@ -33,5 +38,5 @@ const authSlice = createSlice({
 export const isLoggedIn = (state: RootState) => state.auth.isAuth;
 export const useUser = (state: RootState) => state.auth.user;
 
-export const { setUser, logout, setToken } = authSlice.actions;
+export const { setUser, logout, setToken, changeAvatar } = authSlice.actions;
 export default authSlice.reducer;
