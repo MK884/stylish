@@ -2,7 +2,7 @@ import { endPoints } from "@/constants";
 import axios, { AxiosError } from "axios";
 
 export class Products {
-  async getAllProducts() {
+  async getAllProduct() {
     try {
       const response = await axios.get(endPoints.getAllProducts);
       return response?.data;

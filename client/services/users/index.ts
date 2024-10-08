@@ -89,25 +89,46 @@ const update = async ({
   data: Partial<IUser>;
   axios: AxiosInstance;
 }) => {
+  const isEmpty = !(
+    data?.email ||
+    data?.phone ||
+    data?.publicName ||
+    data?.avatarUrl
+  );
 
-  const isEmpty = !( data?.email || data?.phone || data?.publicName || data?.avatarUrl );
+  if (isEmpty) return;
 
-  if(isEmpty) return ;
-  
-  const form = new FormData();
-  if (data?.email) form.append('email', data.email);
-  if (data?.publicName) form.append('publicName', data.publicName);
-  if (data?.phone) form.append('phone', data.phone);
-  if (data?.avatarUrl) form.append('avatar', data.avatarUrl);
+  const formData = new FormData();
+  if (data?.email) formData.append('email', data.email);
+  if (data?.publicName) formData.append('publicName', data.publicName);
+  if (data?.phone) formData.append('phone', data.phone);
+  if (data?.avatarUrl) {
+    const uriArray = data.avatarUrl.split('.');
+    const type = uriArray[uriArray.length - 1];
+    const response = await fetch(data.avatarUrl);
+    const blob = await response.blob();
+    console.log(blob);
+    
+    // formData.append('avatar', new File([blob], `avatar.${type}`, { type: `image/${type}` }));
+    // Convert the image at the URI to a Blob
+    // const blob = await fetch(data.avatarUrl).then(res => res.blob());
+    // formData.append('avatar',  blob, 'avatar.jpg')
+    // @ts-ignore
+    // formData.append('avatar', {
+    //   uri: data.avatarUrl,
+    //   name: `image/${type}`,
+    //   type: `image/${type}`
+    // })
+  }
 
-  console.log('form data =>',{...form})
+  console.log('form data =>', { ...formData });
 
   try {
-    const response = await axios.patch('/user/update', form, {
-      headers:{
-          'Content-Type':'multipart/form-data'
-      }
-  });
+    const response = await axios.patch('/user/update', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
     return response?.data?.data;
   } catch (error) {
@@ -163,4 +184,5 @@ const getUser = async (axios: AxiosInstance) => {
   }
 };
 
-export { login, logout, register, update, deleteUser, getUser };
+export { deleteUser, getUser, login, logout, register, update };
+

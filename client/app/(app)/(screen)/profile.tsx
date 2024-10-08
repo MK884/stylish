@@ -82,7 +82,7 @@ const Profile = () => {
     const data: Partial<IUser> = {};
 
     if (email !== userData?.email) data.email = email;
-    if (avatar !== userData?.avatarUrl) data.avatarUrl = avatar;
+    // if (avatar !== userData?.avatarUrl) data.avatarUrl = avatar;
     if (publiName !== userData?.publicName) data.publicName = publiName;
     if (phone !== userData?.phone) data.phone = phone;
 
@@ -112,6 +112,11 @@ const Profile = () => {
       if (!result.canceled) {
         setIsLoading(true);
         const image = result.assets[0].uri;
+        // const uri = await FileSystem.readAsStringAsync(image, { encoding: 'base64'})
+        // const response = await update({data: { avatarUrl: image}, axios})
+        // console.log(image);
+        // console.log("resp =>",response);
+        
         const uploadResult = await FileSystem.uploadAsync(
           `${process.env.EXPO_PUBLIC_API_URL}/user/update`,
           image,

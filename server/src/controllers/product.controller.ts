@@ -53,7 +53,7 @@ const getAllProducts = async (req: Request, res: Response) => {
     const total = await Product.find().countDocuments();
 
     const data = {
-      ...products,
+      products,
       total,
     }
 

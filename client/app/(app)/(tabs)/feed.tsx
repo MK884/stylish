@@ -1,67 +1,151 @@
-import { CategoryLabel } from "@/components";
-import ProductImage from "@/components/ProductImage";
-import { store } from "@/db";
-import { CategoriesService, ProductsService } from "@/services";
-import { MyText } from "@/ui";
-import Icon from "@expo/vector-icons/FontAwesome";
-import React from "react";
+import { CategoryLabel } from '@/components';
+import ProductImage from '@/components/ProductImage';
+import { store } from '@/db';
 import {
+  CategoriesService,
+  getAllProducts,
+  ProductsService,
+  usePrivateAxios,
+} from '@/services';
+import { MyText } from '@/ui';
+import Icon from '@expo/vector-icons/FontAwesome';
+import React from 'react';
+import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
   ScrollView,
   TextInput,
+  ToastAndroid,
   View,
-} from "react-native";
-import Animated, { BounceIn, FadeIn, FadeOut } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native';
+import Animated, { BounceIn, FadeIn, FadeOut } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const feed = () => {
   let paddingHorizontal = 22;
+  const axios = usePrivateAxios();
 
-  const { width, height } = Dimensions.get("screen");
+  const { width, height } = Dimensions.get('screen');
+  const [products, setProducts] = React.useState<Array<IProduct> | []>([]);
+  const [search, setSearch] = React.useState<string>('');
+  const [page, setPage] = React.useState<number>(0);
+  const [limit, setLimit] = React.useState<number>(15);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  // const [color, setColor] = React.useState<string>('');
+  // const [category, setCategory] = React.useState<string>('');
+  // const [size, setsize] = React.useState<number>([]);
 
-  const [categories, setCategories] = React.useState<Array<Categories>>([]);
-  const [products, setProducts] = React.useState<[]>([]);
-  const [selectedCategory, setSelectedCategory] = React.useState("All");
+  const categories: category[] = [
+    'dresses',
+    'hats',
+    'jacket',
+    'jeans',
+    'pants',
+    'shirts',
+    'skirts',
+    'socks',
+    't-shirts',
+    'top',
+  ];
+  // const [categories, setCategories] = React.useState<Array<Categories>>([]);
+  const [selectedCategory, setSelectedCategory] = React.useState<
+    category | 'All'
+  >('All');
   const [product, setProduct] = React.useState<{
     [key: string]: string;
   } | null>(null);
 
   React.useEffect(() => {
-    const getAllCategories = async () => {
+    // const getAllCategories = async () => {
+    //   try {
+    //     const result = await CategoriesService.getAllCategories();
+    //     setCategories(result);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
+
+    const getProducts = async () => {
+      setIsLoading(true);
       try {
-        const result = await CategoriesService.getAllCategories();
-        setCategories(result);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+        let category = selectedCategory === 'All' ? '' : selectedCategory;
 
-    getAllCategories();
-  }, []);
-
-  React.useEffect(() => {
-    const getAllProducts = async () => {
-      const isCategoryData = selectedCategory !== "All";
-      try {
-        let result;
-
-        if (isCategoryData) {
-          result = await ProductsService.getProductsByCategory(
-            // @ts-ignore
-            selectedCategory
-          );
+        const response = await getAllProducts({
+          axios,
+          category,
+          limit,
+          page,
+          search,
+        });
+        // setProducts((prevProducts) => [...prevProducts, ...response?.products]);
+        if (selectedCategory === 'All') {
+          // @ts-ignore
+          setProductsData({ data: response?.products });
         } else {
-          result = await ProductsService.getAllProducts();
+          setProductsData({ data: response?.products, isAppend: false });
         }
-        setProducts(result);
       } catch (error) {
-        console.error(error);
+        console.log(error);
+        if (error instanceof Error) {
+          ToastAndroid.show(error.message, ToastAndroid.SHORT);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
-    getAllProducts();
-  }, [selectedCategory]);
+
+    getProducts();
+
+    // getAllCategories();
+  }, [selectedCategory, limit, page, search]);
+
+  const setProductsData = ({
+    data,
+    isAppend = true,
+  }: {
+    data: IProduct[];
+    isAppend: boolean;
+  }) => {
+    if (isAppend) {
+      setProducts((prevProducts) => {
+        // const uniqueProducts = [
+        //   ...prevProducts,
+        //   ...data.filter(
+        //     (newP) => !prevProducts.some((prevP) => prevP._id === newP._id)
+        //   ),
+        // ];
+        const duplicateData = data.filter(newP => prevProducts.some(prevP => prevP._id === newP._id))
+        return duplicateData.length ? data :  [...prevProducts, ...data];
+        // return uniqueProducts;
+      });
+    } else {
+      setProducts(data);
+    }
+  };
+
+  // React.useEffect(() => {
+  //   const getAllProducts = async () => {
+  //     const isCategoryData = selectedCategory !== 'All';
+  //     try {
+  //       let result;
+
+  //       if (isCategoryData) {
+  //         result = await ProductsService.getProductsByCategory(
+  //           // @ts-ignore
+  //           selectedCategory
+  //         );
+  //       } else {
+  //         result = await ProductsService.getAllProduct();
+  //       }
+  //       setProducts(result);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   getAllProducts();
+  // }, [selectedCategory]);
 
   const getProductById = async (id: number) => {
     if (!id) return;
@@ -76,6 +160,9 @@ const feed = () => {
 
   const onPressOut = () => setProduct(null);
 
+  const leftProducts = products && products.filter((_, idx) => idx % 2 !== 0);
+  const rightProducts = products && products.filter((_, idx) => idx % 2 === 0);
+
   return (
     <SafeAreaView className="flex-1">
       <View
@@ -85,17 +172,19 @@ const feed = () => {
         <TextInput
           placeholder="Search on Stylish"
           className="flex-1"
-          placeholderTextColor={"#676767"}
-          cursorColor={"blue"}
+          placeholderTextColor={'#676767'}
+          cursorColor={'blue'}
+          value={search}
+          onChangeText={text=>setSearch(text)}
         />
-        <Icon name="search" size={20} color={"#616161"} />
+        <Icon name="search" size={20} color={'#616161'} />
       </View>
       <View style={{ marginLeft: paddingHorizontal }} className="flex-row my-2">
         <View>
           <CategoryLabel
             label="All"
-            isSelected={selectedCategory === "All"}
-            onPress={() => setSelectedCategory("All")}
+            isSelected={selectedCategory === 'All'}
+            onPress={() => setSelectedCategory('All')}
           />
         </View>
         <View className="w-[1px] h-full bg-[#dadada] mx-2" />
@@ -109,7 +198,7 @@ const feed = () => {
             />
           )}
           keyExtractor={(item) => item}
-          ItemSeparatorComponent={() => <View className="mr-2" />}
+          // ItemSeparatorComponent={() => <View className="w-2" />}
           horizontal
           showsHorizontalScrollIndicator={false}
         />
@@ -118,45 +207,66 @@ const feed = () => {
         style={{ paddingHorizontal: 16, width, paddingBottom: 160, zIndex: 0 }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <View>
-              {products
-                ?.filter((_, idx) => idx % 2 !== 0)
-                ?.map((item: any, idx) => {
-                  return (
-                    <ProductImage
-                      item={item}
-                      key={idx + 1}
-                      onLongPress={getProductById}
-                      onPressOut={onPressOut}
-                    />
-                  );
-                })}
+          {isLoading ? (
+            <View className="flex-1 items-center justify-center">
+              <ActivityIndicator size={'large'} />
             </View>
-            <View>
-              {products
-                ?.filter((_, idx) => idx % 2 === 0)
-                ?.map((item: any, idx) => {
-                  return (
-                    <ProductImage
-                      item={item}
-                      key={idx + 2}
-                      onLongPress={getProductById}
-                      onPressOut={onPressOut}
-                    />
-                  );
-                })}
+          ) : (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <View>
+                {products
+                  ?.filter((_, idx) => idx % 2 !== 0)
+                  ?.map((item, idx) => {
+                    return (
+                      <ProductImage item={item} key={item._id} index={idx} />
+                    );
+                  })}
+                {/* {leftProducts && (
+                  <FlatList
+                    data={leftProducts}
+                    renderItem={({ item, index }) => (
+                      <ProductImage
+                        item={item}
+                        key={item._id}
+                        index={index}
+                      />
+                    )}
+                  />
+                )} */}
+              </View>
+              <View>
+                {products
+                  ?.filter((_, idx) => idx % 2 === 0)
+                  ?.map((item, idx) => {
+                    return (
+                      <ProductImage item={item} key={item._id} index={idx} />
+                    );
+                  })}
+                {/* {rightProducts && (
+                  <FlatList
+                    data={rightProducts}
+                    renderItem={({ item, index }) => (
+                      <ProductImage
+                        item={item}
+                        key={item._id}
+                        index={index}
+                        
+                      />
+                    )}
+                  />
+                )} */}
+              </View>
             </View>
-          </View>
+          )}
         </ScrollView>
       </View>
-      {product !== null && (
+      {/* {product !== null && (
         <Animated.View
           entering={FadeIn}
           exiting={FadeOut}
@@ -171,7 +281,7 @@ const feed = () => {
                 uri: product?.image,
               }}
               style={{
-                resizeMode: "contain",
+                resizeMode: 'contain',
                 flex: 1,
               }}
             />
@@ -183,12 +293,12 @@ const feed = () => {
             <View className="bg-white rounded-full w-12 h-12 overflow-hidden">
               <Image
                 source={store[3].logo}
-                style={{ resizeMode: "contain", height: "100%", width: "100%" }}
+                style={{ resizeMode: 'contain', height: '100%', width: '100%' }}
               />
             </View>
           </View>
         </Animated.View>
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

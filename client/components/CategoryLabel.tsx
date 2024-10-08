@@ -1,7 +1,7 @@
-import { View, Text, Pressable, PressableProps } from "react-native";
-import React from "react";
-import { MyText } from "@/ui";
-import Animated, { FadeInRight } from "react-native-reanimated";
+import { View, Text, Pressable, PressableProps } from 'react-native';
+import React from 'react';
+import { MyText } from '@/ui';
+import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated';
 
 interface CategoryLabelProps extends PressableProps {
   label: string;
@@ -11,13 +11,15 @@ interface CategoryLabelProps extends PressableProps {
 
 const CategoryLabel = ({ label, isSelected, ...rest }: CategoryLabelProps) => {
   return (
-    <View>
-      <Pressable {...rest}>
+    <Animated.View
+      entering={FadeInLeft.duration(200)}
+    >
+      <Pressable {...rest} className="mr-2">
         <MyText
           className={`font-semibold text-lg`}
           style={{
-            color: isSelected ? "black" : "#868687",
-            textTransform: "capitalize",
+            color: isSelected ? 'black' : '#868687',
+            textTransform: 'capitalize',
           }}
         >
           {label}
@@ -26,7 +28,7 @@ const CategoryLabel = ({ label, isSelected, ...rest }: CategoryLabelProps) => {
           <View className="w-1 h-1 rounded-full self-center bg-[#614FE0]" />
         )}
       </Pressable>
-    </View>
+    </Animated.View>
   );
 };
 
