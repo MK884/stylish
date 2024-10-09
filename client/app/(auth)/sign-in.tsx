@@ -38,7 +38,7 @@ const SignUp = () => {
     try {
       const response = await login({ email, password });
 
-      console.log('login response =>', response);
+      // console.log('login response =>', response);
       dispatch(setUser(response))
 
       router.replace('/(app)/(tabs)/feed')

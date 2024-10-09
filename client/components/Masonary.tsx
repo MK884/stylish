@@ -11,6 +11,8 @@ interface MasonaryProps {
   page: number;
   isListLoading: boolean;
   setPage: React.Dispatch<React.SetStateAction<number>>;
+  onPressIn: (id:string)=>void;
+  onPressOut: ()=>void;
 }
 
 const Masonary = ({
@@ -21,6 +23,8 @@ const Masonary = ({
   page,
   setPage,
   isListLoading,
+  onPressIn,
+  onPressOut,
 }: MasonaryProps) => {
   return (
     <ScrollView
@@ -58,7 +62,7 @@ const Masonary = ({
                     ?.filter((_, idx) => idx % 2 !== 0)
                     ?.map((item, idx) => {
                       return (
-                        <ProductImage item={item} key={item._id} index={idx} />
+                        <ProductImage item={item} key={item._id} index={idx} onPress={()=>onPressIn(item._id)} onPressOut={onPressOut}/>
                       );
                     })}
                 </View>
@@ -67,7 +71,7 @@ const Masonary = ({
                     ?.filter((_, idx) => idx % 2 === 0)
                     ?.map((item, idx) => {
                       return (
-                        <ProductImage item={item} key={item._id} index={idx} />
+                        <ProductImage item={item} key={item._id} index={idx} onPress={()=>onPressIn(item._id)} onPressOut={onPressOut}/>
                       );
                     })}
                 </View>

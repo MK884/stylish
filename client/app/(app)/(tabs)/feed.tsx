@@ -1,15 +1,18 @@
 import { CategoryLabel, Masonary } from '@/components';
 import { getAllProducts, usePrivateAxios } from '@/services';
+import { MyText } from '@/ui';
 import Icon from '@expo/vector-icons/FontAwesome';
 import React from 'react';
 import {
   Dimensions,
   FlatList,
+  Image,
   Modal,
   TextInput,
   ToastAndroid,
   View,
 } from 'react-native';
+import Animated, { BounceIn, FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const feed = () => {
@@ -18,6 +21,7 @@ const feed = () => {
 
   const { width, height } = Dimensions.get('screen');
   const [products, setProducts] = React.useState<Array<IProduct> | []>([]);
+  const [product, setProduct] = React.useState<IProduct | null>(null);
   const [search, setSearch] = React.useState<string>('');
   const [page, setPage] = React.useState<number>(0);
   const [total, setTotal] = React.useState<number>(0);
@@ -103,16 +107,21 @@ const feed = () => {
 
   const onPressOut = () => {
     // setLongPressStarted(false);
-    if (!isDragging) {
-      setIsModalVisible(false);
-    }
-    console.log('called');
+    // if (!isDragging) {
+    //   setIsModalVisible(false);
+    // }
+    // console.log('called');
 
-    setIsDragging(false);
+    // setIsDragging(false);
+    setProduct(null);
   };
-  const onPress = () => {
-    setIsModalVisible(true);
-    // setLongPressStarted(true)
+  const onPress = (id: string) => {
+    // setIsModalVisible(true);
+    // setLongPressStarted(true);
+    const activeProduct = products?.filter((item) => item?._id === id);
+    // console.log({...activeProduct[0]});
+    
+    setProduct({...activeProduct[0]});
   };
 
   const onTouchMove = () => {
@@ -208,9 +217,11 @@ const feed = () => {
           setPage={setPage}
           page={page}
           isListLoading={isListLoading}
+          onPressIn={onPress}
+          onPressOut={onPressOut}
         />
       </View>
-      <Modal
+      {/* <Modal
         transparent={true}
         visible={isModalVisible}
         animationType="fade"
@@ -218,8 +229,8 @@ const feed = () => {
         style={{ zIndex: 9999 }}
       >
         <View className="flex-1 bg-black/20" />
-      </Modal>
-      {/* {product !== null && (
+      </Modal> */}
+      {product !== null && (
         <Animated.View
           entering={FadeIn}
           exiting={FadeOut}
@@ -227,31 +238,31 @@ const feed = () => {
         >
           <Animated.View
             entering={BounceIn.duration(100)}
-            className="bg-white h-80 w-72 p-2 overflow-hidden rounded-xl"
+            className="bg-white h-80 w-72 overflow-hidden rounded-xl"
           >
             <Image
               source={{
-                uri: product?.image,
+                uri: product?.productImg?.[0]?.src,
               }}
               style={{
-                resizeMode: 'contain',
+                resizeMode: 'cover',
                 flex: 1,
               }}
             />
           </Animated.View>
           <View className="bg-white w-72 rounded-xl p-2 px-4 flex-row items-center justify-between">
             <MyText className="font-bold capitalize">
-              {product?.category}
+              {product?.store?.[0]?.name}
             </MyText>
-            <View className="bg-white rounded-full w-12 h-12 overflow-hidden">
+            <View className="bg-white rounded-full border border-[#dadada] w-12 h-12 overflow-hidden">
               <Image
-                source={store[3].logo}
+                source={{uri:product?.store?.[0]?.avatarUrl}}
                 style={{ resizeMode: 'contain', height: '100%', width: '100%' }}
               />
             </View>
           </View>
         </Animated.View>
-      )} */}
+      )}
     </SafeAreaView>
   );
 };
