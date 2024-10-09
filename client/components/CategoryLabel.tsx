@@ -12,7 +12,7 @@ interface CategoryLabelProps extends PressableProps {
 const CategoryLabel = ({ label, isSelected, ...rest }: CategoryLabelProps) => {
   return (
     <Animated.View
-      entering={FadeInLeft.duration(200)}
+      entering={FadeInRight.duration(400)}
     >
       <Pressable {...rest} className="mr-2">
         <MyText

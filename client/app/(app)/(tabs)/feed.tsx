@@ -1,5 +1,7 @@
-import { CategoryLabel } from '@/components';
+import { CategoryLabel, NoProducts } from '@/components';
+import Masonary from '@/components/Masonary';
 import ProductImage from '@/components/ProductImage';
+import Test from '@/components/NoProducts';
 import { store } from '@/db';
 import {
   CategoriesService,
@@ -15,6 +17,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  Modal,
   ScrollView,
   TextInput,
   ToastAndroid,
@@ -31,8 +34,12 @@ const feed = () => {
   const [products, setProducts] = React.useState<Array<IProduct> | []>([]);
   const [search, setSearch] = React.useState<string>('');
   const [page, setPage] = React.useState<number>(0);
+  const [total, setTotal] = React.useState<number>(0);
   const [limit, setLimit] = React.useState<number>(15);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);
+  const [isListLoading, setIsListLoading] = React.useState<boolean>(false);
+  const [isDragging, setIsDragging] = React.useState<boolean>(false);
   // const [color, setColor] = React.useState<string>('');
   // const [category, setCategory] = React.useState<string>('');
   // const [size, setsize] = React.useState<number>([]);
@@ -76,7 +83,6 @@ const feed = () => {
           axios,
           category,
           limit,
-          page,
           search,
         });
         // setProducts((prevProducts) => [...prevProducts, ...response?.products]);
@@ -86,6 +92,8 @@ const feed = () => {
         } else {
           setProductsData({ data: response?.products, isAppend: false });
         }
+
+        setTotal(response?.total);
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
@@ -99,7 +107,7 @@ const feed = () => {
     getProducts();
 
     // getAllCategories();
-  }, [selectedCategory, limit, page, search]);
+  }, [selectedCategory, limit, search]);
 
   const setProductsData = ({
     data,
@@ -116,8 +124,10 @@ const feed = () => {
         //     (newP) => !prevProducts.some((prevP) => prevP._id === newP._id)
         //   ),
         // ];
-        const duplicateData = data.filter(newP => prevProducts.some(prevP => prevP._id === newP._id))
-        return duplicateData.length ? data :  [...prevProducts, ...data];
+        const duplicateData = data.filter((newP) =>
+          prevProducts.some((prevP) => prevP._id === newP._id)
+        );
+        return duplicateData.length ? data : [...prevProducts, ...data];
         // return uniqueProducts;
       });
     } else {
@@ -158,10 +168,63 @@ const feed = () => {
     }
   };
 
-  const onPressOut = () => setProduct(null);
+  // let longPressStarted = false;
+  // let isDragging = false;
 
+  const onPressOut = () => {
+    // setLongPressStarted(false);
+    if (!isDragging) {
+      setIsModalVisible(false);
+    }
+    console.log('called');
+
+    setIsDragging(false);
+  };
+  const onPress = () => {
+    setIsModalVisible(true);
+    // setLongPressStarted(true)
+  };
+
+  const onTouchMove = () => {
+    setIsDragging(true);
+  };
   const leftProducts = products && products.filter((_, idx) => idx % 2 !== 0);
   const rightProducts = products && products.filter((_, idx) => idx % 2 === 0);
+
+  const fetchNextPage = async () => {
+    // const nextPage =
+    //   pageNo <= Math.ceil(total / limit) ? pageNo : Math.ceil(total / limit);
+    if (!(page + 1 <= Math.ceil(total / limit)) || page === 0) return;
+    let category = selectedCategory === 'All' ? '' : selectedCategory;
+
+    try {
+      setIsListLoading(true);
+      const response = await getAllProducts({
+        axios,
+        page,
+        category,
+        limit,
+        search,
+      });
+      setProducts((prev) => [...prev, ...response?.products]);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    } finally {
+      setIsListLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchNextPage();
+  }, [page]);
+
+  const setActiveCategory = (name: category | 'All') => {
+    setPage(0);
+    setSelectedCategory(name);
+  };
 
   return (
     <SafeAreaView className="flex-1">
@@ -175,7 +238,7 @@ const feed = () => {
           placeholderTextColor={'#676767'}
           cursorColor={'blue'}
           value={search}
-          onChangeText={text=>setSearch(text)}
+          onChangeText={(text) => setSearch(text)}
         />
         <Icon name="search" size={20} color={'#616161'} />
       </View>
@@ -184,7 +247,7 @@ const feed = () => {
           <CategoryLabel
             label="All"
             isSelected={selectedCategory === 'All'}
-            onPress={() => setSelectedCategory('All')}
+            onPress={() => setActiveCategory('All')}
           />
         </View>
         <View className="w-[1px] h-full bg-[#dadada] mx-2" />
@@ -194,7 +257,7 @@ const feed = () => {
             <CategoryLabel
               label={item}
               isSelected={selectedCategory === item}
-              onPress={() => setSelectedCategory(item)}
+              onPress={() => setActiveCategory(item)}
             />
           )}
           keyExtractor={(item) => item}
@@ -204,68 +267,102 @@ const feed = () => {
         />
       </View>
       <View
-        style={{ paddingHorizontal: 16, width, paddingBottom: 160, zIndex: 0 }}
+        style={{
+          paddingHorizontal: 16,
+          width,
+          paddingBottom: 180,
+        }}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardDismissMode="on-drag"
+          onMomentumScrollEnd={(e) => {
+            const scrollViewHeight = e.nativeEvent.layoutMeasurement.height;
+            const scrollPosition = e.nativeEvent.contentOffset.y;
+            const contentHeight = e.nativeEvent.contentSize.height;
+            if (
+              scrollViewHeight + contentHeight >= contentHeight - 500 &&
+              page <= Math.ceil(total / limit)
+            ) {
+              setPage((prev) => prev + 1);
+            }
+          }}
+        >
           {isLoading ? (
-            <View className="flex-1 items-center justify-center">
+            <View className="flex-1 items-center justify-center z-0">
               <ActivityIndicator size={'large'} />
             </View>
           ) : (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <View>
-                {products
-                  ?.filter((_, idx) => idx % 2 !== 0)
-                  ?.map((item, idx) => {
-                    return (
-                      <ProductImage item={item} key={item._id} index={idx} />
-                    );
-                  })}
-                {/* {leftProducts && (
-                  <FlatList
-                    data={leftProducts}
-                    renderItem={({ item, index }) => (
-                      <ProductImage
-                        item={item}
-                        key={item._id}
-                        index={index}
-                      />
-                    )}
-                  />
-                )} */}
-              </View>
-              <View>
-                {products
-                  ?.filter((_, idx) => idx % 2 === 0)
-                  ?.map((item, idx) => {
-                    return (
-                      <ProductImage item={item} key={item._id} index={idx} />
-                    );
-                  })}
-                {/* {rightProducts && (
-                  <FlatList
-                    data={rightProducts}
-                    renderItem={({ item, index }) => (
-                      <ProductImage
-                        item={item}
-                        key={item._id}
-                        index={index}
-                        
-                      />
-                    )}
-                  />
-                )} */}
-              </View>
+            <View>
+              {products?.length ? (
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <View>
+                      {products
+                        ?.filter((_, idx) => idx % 2 !== 0)
+                        ?.map((item, idx) => {
+                          return (
+                            <ProductImage
+                              item={item}
+                              key={item._id}
+                              index={idx}
+                            />
+                          );
+                        })}
+                    </View>
+                    <View>
+                      {products
+                        ?.filter((_, idx) => idx % 2 === 0)
+                        ?.map((item, idx) => {
+                          return (
+                            <ProductImage
+                              item={item}
+                              key={item._id}
+                              index={idx}
+                            />
+                          );
+                        })}
+                    </View>
+                  </View>
+                  {isListLoading && (
+                    <View className="flex-1 items-center justify-center">
+                      <ActivityIndicator size={'small'} />
+                    </View>
+                  )}
+                </>
+              ) : (
+                <NoProducts />
+              )}
             </View>
           )}
         </ScrollView>
+        {/* <Masonary
+          category={selectedCategory}
+          isLoading={isLoading}
+          products={products}
+          limit={limit}
+          search={search}
+          total={total}
+          setProducts={setProducts}
+          setPage={setPage}
+          page={page}
+        /> */}
       </View>
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        animationType="fade"
+        onRequestClose={() => setIsModalVisible(false)}
+        style={{ zIndex: 9999 }}
+      >
+        <View className="flex-1 bg-black/20" />
+      </Modal>
       {/* {product !== null && (
         <Animated.View
           entering={FadeIn}
