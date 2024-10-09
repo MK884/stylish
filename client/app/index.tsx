@@ -1,15 +1,15 @@
 import { OnBoardingScreen } from "@/components";
 import { onBoardData } from "@/constants";
-import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Montserrat_100Thin,
   Montserrat_400Regular,
   useFonts,
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   const [loaded, error] = useFonts({

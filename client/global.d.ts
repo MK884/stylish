@@ -73,6 +73,10 @@ interface IStore {
   updatedAt: string;
 }
 
+type IProductImage = {
+  src: string;
+};
+
 interface IProduct {
   _id: string;
   title: string;
@@ -82,7 +86,20 @@ interface IProduct {
   description?: string;
   store: Array<Istore>;
   price: number;
-  productImg: [{ src: string }];
+  productImg: Array<IProductImage>;
   quantity?: number;
   discount?: number;
+  rating?:number;
+}
+
+interface StoreCardProps {
+  height?: number;
+  width?: number;
+  item: IStore;
+}
+
+interface ProductCard {
+  item: IProduct;
+  height?: number;
+  width?: number;
 }

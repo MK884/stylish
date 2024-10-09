@@ -1,9 +1,9 @@
-import { setUser } from '@/features/auth/authSlice';
+import { isLoggedIn, setUser } from '@/features/auth/authSlice';
 import { login } from '@/services/users';
-import { useAppDispatch } from '@/store/hook';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { Button, MyText, TextInput } from '@/ui';
 import { AxiosError } from 'axios';
-import { Link, router } from 'expo-router';
+import { Link, Redirect, router } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +18,10 @@ const SignUp = () => {
   const dispatch = useAppDispatch();
 
   const isEmpty = email === '' || password === '';
+
+  const Auth = useAppSelector(isLoggedIn);
+
+  if(Auth) return <Redirect href={'/(app)/(tabs)/feed'} />
 
   const onEmailChange = (text: string) => {
     setEmailError('');

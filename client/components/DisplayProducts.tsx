@@ -1,7 +1,7 @@
-import { productPorps } from "@/db";
-import { MyText } from "@/ui";
-import React from "react";
-import { FlatListProps, Image, Text, View } from "react-native";
+import { productPorps } from '@/db';
+import { MyText } from '@/ui';
+import React from 'react';
+import { FlatListProps, Image, Text, View } from 'react-native';
 
 interface DisplayProductsProps extends FlatListProps<any> {
   title: string;
@@ -44,7 +44,7 @@ export const RenderItem = ({
 
   return (
     <>
-      <View className="flex space-y-3 bg-white p-3 rounded-lg shadow">
+      <View className="flex space-y-3 p-1 bg-white rounded-lg shadow">
         <View
           className={`rounded-xl overflow-hidden relative`}
           style={{
@@ -54,13 +54,13 @@ export const RenderItem = ({
         >
           <Image
             source={ImgSource}
-            style={{ resizeMode: "cover", height: "100%", width: "100%" }}
+            style={{ resizeMode: 'cover', height: '100%', width: '100%' }}
           />
           {isStore && (
             <View className="absolute bg-white rounded-full w-12 h-12 bottom-2 left-2 overflow-hidden">
               <Image
                 source={data?.logo}
-                style={{ resizeMode: "contain", height: "100%", width: "100%" }}
+                style={{ resizeMode: 'contain', height: '100%', width: '100%' }}
               />
             </View>
           )}
@@ -73,8 +73,8 @@ export const RenderItem = ({
             <View className="flex-row ">
               <MyText
                 style={{
-                  color: "#dadada",
-                  textDecorationLine: "line-through",
+                  color: '#dadada',
+                  textDecorationLine: 'line-through',
                   marginRight: 4,
                   fontSize: 14,
                 }}
@@ -83,7 +83,7 @@ export const RenderItem = ({
               </MyText>
               <MyText
                 style={{
-                  color: "green",
+                  color: 'green',
                   fontSize: 14,
                 }}
               >
