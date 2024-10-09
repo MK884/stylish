@@ -1,29 +1,15 @@
-import { CategoryLabel, NoProducts } from '@/components';
-import Masonary from '@/components/Masonary';
-import ProductImage from '@/components/ProductImage';
-import Test from '@/components/NoProducts';
-import { store } from '@/db';
-import {
-  CategoriesService,
-  getAllProducts,
-  ProductsService,
-  usePrivateAxios,
-} from '@/services';
-import { MyText } from '@/ui';
+import { CategoryLabel, Masonary } from '@/components';
+import { getAllProducts, usePrivateAxios } from '@/services';
 import Icon from '@expo/vector-icons/FontAwesome';
 import React from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
   FlatList,
-  Image,
   Modal,
-  ScrollView,
   TextInput,
   ToastAndroid,
   View,
 } from 'react-native';
-import Animated, { BounceIn, FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const feed = () => {
@@ -40,9 +26,6 @@ const feed = () => {
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);
   const [isListLoading, setIsListLoading] = React.useState<boolean>(false);
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
-  // const [color, setColor] = React.useState<string>('');
-  // const [category, setCategory] = React.useState<string>('');
-  // const [size, setsize] = React.useState<number>([]);
 
   const categories: category[] = [
     'dresses',
@@ -56,24 +39,11 @@ const feed = () => {
     't-shirts',
     'top',
   ];
-  // const [categories, setCategories] = React.useState<Array<Categories>>([]);
   const [selectedCategory, setSelectedCategory] = React.useState<
     category | 'All'
   >('All');
-  const [product, setProduct] = React.useState<{
-    [key: string]: string;
-  } | null>(null);
 
   React.useEffect(() => {
-    // const getAllCategories = async () => {
-    //   try {
-    //     const result = await CategoriesService.getAllCategories();
-    //     setCategories(result);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // };
-
     const getProducts = async () => {
       setIsLoading(true);
       try {
@@ -85,7 +55,6 @@ const feed = () => {
           limit,
           search,
         });
-        // setProducts((prevProducts) => [...prevProducts, ...response?.products]);
         if (selectedCategory === 'All') {
           // @ts-ignore
           setProductsData({ data: response?.products });
@@ -105,8 +74,6 @@ const feed = () => {
     };
 
     getProducts();
-
-    // getAllCategories();
   }, [selectedCategory, limit, search]);
 
   const setProductsData = ({
@@ -128,48 +95,11 @@ const feed = () => {
           prevProducts.some((prevP) => prevP._id === newP._id)
         );
         return duplicateData.length ? data : [...prevProducts, ...data];
-        // return uniqueProducts;
       });
     } else {
       setProducts(data);
     }
   };
-
-  // React.useEffect(() => {
-  //   const getAllProducts = async () => {
-  //     const isCategoryData = selectedCategory !== 'All';
-  //     try {
-  //       let result;
-
-  //       if (isCategoryData) {
-  //         result = await ProductsService.getProductsByCategory(
-  //           // @ts-ignore
-  //           selectedCategory
-  //         );
-  //       } else {
-  //         result = await ProductsService.getAllProduct();
-  //       }
-  //       setProducts(result);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-  //   getAllProducts();
-  // }, [selectedCategory]);
-
-  const getProductById = async (id: number) => {
-    if (!id) return;
-    try {
-      const result = await ProductsService.getProductsById(id);
-      // console.log("product: ", result);
-      setProduct(result);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // let longPressStarted = false;
-  // let isDragging = false;
 
   const onPressOut = () => {
     // setLongPressStarted(false);
@@ -188,8 +118,6 @@ const feed = () => {
   const onTouchMove = () => {
     setIsDragging(true);
   };
-  const leftProducts = products && products.filter((_, idx) => idx % 2 !== 0);
-  const rightProducts = products && products.filter((_, idx) => idx % 2 === 0);
 
   const fetchNextPage = async () => {
     // const nextPage =
@@ -261,7 +189,6 @@ const feed = () => {
             />
           )}
           keyExtractor={(item) => item}
-          // ItemSeparatorComponent={() => <View className="w-2" />}
           horizontal
           showsHorizontalScrollIndicator={false}
         />
@@ -273,86 +200,15 @@ const feed = () => {
           paddingBottom: 180,
         }}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardDismissMode="on-drag"
-          onMomentumScrollEnd={(e) => {
-            const scrollViewHeight = e.nativeEvent.layoutMeasurement.height;
-            const scrollPosition = e.nativeEvent.contentOffset.y;
-            const contentHeight = e.nativeEvent.contentSize.height;
-            if (
-              scrollViewHeight + contentHeight >= contentHeight - 500 &&
-              page <= Math.ceil(total / limit)
-            ) {
-              setPage((prev) => prev + 1);
-            }
-          }}
-        >
-          {isLoading ? (
-            <View className="flex-1 items-center justify-center z-0">
-              <ActivityIndicator size={'large'} />
-            </View>
-          ) : (
-            <View>
-              {products?.length ? (
-                <>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <View>
-                      {products
-                        ?.filter((_, idx) => idx % 2 !== 0)
-                        ?.map((item, idx) => {
-                          return (
-                            <ProductImage
-                              item={item}
-                              key={item._id}
-                              index={idx}
-                            />
-                          );
-                        })}
-                    </View>
-                    <View>
-                      {products
-                        ?.filter((_, idx) => idx % 2 === 0)
-                        ?.map((item, idx) => {
-                          return (
-                            <ProductImage
-                              item={item}
-                              key={item._id}
-                              index={idx}
-                            />
-                          );
-                        })}
-                    </View>
-                  </View>
-                  {isListLoading && (
-                    <View className="flex-1 items-center justify-center">
-                      <ActivityIndicator size={'small'} />
-                    </View>
-                  )}
-                </>
-              ) : (
-                <NoProducts />
-              )}
-            </View>
-          )}
-        </ScrollView>
-        {/* <Masonary
-          category={selectedCategory}
+        <Masonary
           isLoading={isLoading}
           products={products}
           limit={limit}
-          search={search}
           total={total}
-          setProducts={setProducts}
           setPage={setPage}
           page={page}
-        /> */}
+          isListLoading={isListLoading}
+        />
       </View>
       <Modal
         transparent={true}

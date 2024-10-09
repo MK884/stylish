@@ -3,6 +3,7 @@ import CategoryLabel from './CategoryLabel';
 import DisplayProducts from './DisplayProducts';
 import Divider from './Divider';
 import InputModal from './InputModal';
+import Masonary from './Masonary';
 import NoProducts from './NoProducts';
 import OnBoardingItem from './OnBoardingItem';
 import OnBoardingScreen from './OnBoardingScreen';
@@ -17,4 +18,5 @@ export {
   DisplayProducts,
   InputModal,
   NoProducts,
+  Masonary,
 };
