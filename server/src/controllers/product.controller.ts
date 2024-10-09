@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { Product } from '../models';
 
 const getAllProducts = async (req: Request, res: Response) => {
-  const { page, limit, search, color, size, category } = req?.query;
+  const { page, limit, search, color, size, category, brand } = req?.query;
 
   let currentPage = Number(page) || 0;
   let docLimit = Number(limit) || 10;
@@ -30,6 +30,7 @@ const getAllProducts = async (req: Request, res: Response) => {
             },
           ],
           ...(color ? { color: { $regex: color, $options: 'i' } } : {}),
+          ...(brand ? { 'store.name': { $regex: brand, $options: 'i' } } : {}),
           ...(size
             ? {
                 size: {
@@ -55,13 +56,13 @@ const getAllProducts = async (req: Request, res: Response) => {
     const data = {
       products,
       total,
-    }
+    };
 
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'fetch successfully',
-      data
+      data,
     });
   } catch (error) {
     if (error instanceof Error) {
