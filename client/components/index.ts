@@ -1,3 +1,4 @@
+import Accordion from './Accordion';
 import Banner from './Banner';
 import CategoryLabel from './CategoryLabel';
 import Collections from './Collections';
@@ -31,4 +32,5 @@ export {
   Stores,
   Collections,
   StoreLogo,
+  Accordion,
 };

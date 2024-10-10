@@ -63,3 +63,30 @@ export const collection: collection[] = [
     src: 'https://static.zara.net/assets/public/a540/8ea9/8ad041a79353/97bf68ed4ab5/03641842621-a1/03641842621-a1.jpg?ts=1725022843834&w=750&f=auto',
   },
 ];
+
+type colors =
+  | 'black'
+  | 'white'
+  | 'blue'
+  | 'brown'
+  | 'copper'
+  | 'gold'
+  | 'green'
+  | 'grey'
+  | 'navy'
+  | 'pink'
+  | 'orange';
+
+export const colorCode = {
+  black: '#0E0E10',
+  white: 'white',
+  blue: '#4B7EFF',
+  brown: '#AE7250',
+  copper: '#D69E83',
+  gold: '#E1C96D',
+  green: '#2EA690',
+  grey: '#9F9F9F',
+  navy: '#163564',
+  pink: 'pink',
+  orange: 'orange',
+};
