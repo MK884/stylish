@@ -24,10 +24,10 @@ const tabs: tab[] = [
     label: 'Collections',
     content: <Collections />,
   },
-  {
-    label: 'Stores',
-    content: <Stores />,
-  },
+  // {
+  //   label: 'Stores',
+  //   content: <Stores />,
+  // },
 ];
 
 const market = () => {
@@ -53,9 +53,9 @@ const market = () => {
           />
           <Icon name="search" size={20} color={'#616161'} />
         </View>
-        <View className="bg-white rounded-lg h-10 w-10 flex items-center justify-center">
+        {/* <View className="bg-white rounded-lg h-10 w-10 flex items-center justify-center">
           <Icon name="filter" size={22} />
-        </View>
+        </View> */}
       </View>
       <View
         style={{ marginLeft: paddingHorizontal }}

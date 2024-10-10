@@ -21,6 +21,12 @@ const ScreenLayout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="[productId]"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

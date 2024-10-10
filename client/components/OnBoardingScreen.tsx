@@ -1,5 +1,5 @@
-import { Link } from "expo-router";
-import React from "react";
+import { Link } from 'expo-router';
+import React from 'react';
 import {
   Animated,
   Dimensions,
@@ -8,9 +8,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import OnBoardItem from "./OnBoardingItem";
-import { MyText } from "@/ui";
+} from 'react-native';
+import OnBoardItem from './OnBoardingItem';
+import { MyText } from '@/ui';
 
 const OnBoardingScreen = ({
   items,
@@ -20,7 +20,7 @@ const OnBoardingScreen = ({
   const ref = React.useRef<FlatList>(null);
   const [currentIdx, setCurrentIdx] = React.useState(0);
 
-  const { width, height } = Dimensions.get("window");
+  const { width, height } = Dimensions.get('window');
 
   const scrollToSlide = (idx: number) => {
     if (idx >= items.length) return null;
@@ -60,7 +60,7 @@ const OnBoardingScreen = ({
               onPress={() => scrollToSlide(idx)}
               key={item.id}
               className={`w-2 h-2 rounded-full ${
-                currentIdx === idx ? "bg-black w-8" : "bg-[#dadada]"
+                currentIdx === idx ? 'bg-black w-8' : 'bg-[#dadada]'
               }`}
             ></Pressable>
           ))}

@@ -100,7 +100,9 @@ const Featured = () => {
           <View>
             <FlatList
               data={stores}
-              renderItem={({ item }) => <StoreCard item={item} />}
+              renderItem={({ item }) => (
+                <StoreCard item={item} key={item._id} />
+              )}
               keyExtractor={(item) => item._id}
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -131,7 +133,9 @@ const Featured = () => {
           <View>
             <FlatList
               data={productOnSale}
-              renderItem={({ item }) => <ProductCard item={item} />}
+              renderItem={({ item }) => (
+                <ProductCard item={item} key={item._id} />
+              )}
               keyExtractor={(item) => item._id}
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -178,6 +182,7 @@ const Featured = () => {
                   imgWidth={180}
                   imgHeight={180}
                   isStore
+                  key={item.id}
                 />
               )}
               keyExtractor={(item) => item.id?.toString()}
