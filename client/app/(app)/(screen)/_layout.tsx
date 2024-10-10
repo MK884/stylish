@@ -1,6 +1,6 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { Stack } from "expo-router";
+import { View, Text } from 'react-native';
+import React from 'react';
+import { Stack } from 'expo-router';
 
 const ScreenLayout = () => {
   return (
@@ -8,11 +8,17 @@ const ScreenLayout = () => {
       <Stack.Screen
         name="profile"
         options={{
-          title: "",
+          title: '',
           headerStyle: {
-            backgroundColor: "white",
+            backgroundColor: 'white',
           },
           headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="stores"
+        options={{
+          headerShown: false,
         }}
       />
     </Stack>

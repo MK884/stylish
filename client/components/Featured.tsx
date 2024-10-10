@@ -1,19 +1,21 @@
-import {
-  View,
-  ScrollView,
-  ActivityIndicator,
-  ToastAndroid,
-  FlatList,
-} from 'react-native';
-import React from 'react';
-import Banner from './Banner';
-import { MyText } from '@/ui';
-import StoreCard from './StoreCard';
-import ProductCard from './ProductCard';
-import { RenderItem } from './DisplayProducts';
-import { getAllProducts, getAllStore, usePrivateAxios } from '@/services';
-import Feather from '@expo/vector-icons/Feather';
 import { freshCollection } from '@/db';
+import { getAllProducts, getAllStore, usePrivateAxios } from '@/services';
+import { MyText } from '@/ui';
+import Feather from '@expo/vector-icons/Feather';
+import { router } from 'expo-router';
+import React from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  ScrollView,
+  ToastAndroid,
+  View,
+} from 'react-native';
+import Banner from './Banner';
+import { RenderItem } from './DisplayProducts';
+import ProductCard from './ProductCard';
+import StoreCard from './StoreCard';
 
 const Featured = () => {
   const axios = usePrivateAxios();
@@ -83,9 +85,10 @@ const Featured = () => {
             gap: 20,
           }}
         >
-          <View
+          <Pressable
             className="flex-row justify-between items-center"
             style={{ marginHorizontal: paddingHorizontal }}
+            onPress={() => router.navigate('/(app)/(screen)/stores')}
           >
             <View>
               <MyText className="font-bold text-lg">New Store</MyText>
@@ -93,7 +96,7 @@ const Featured = () => {
             <View>
               <Feather name="arrow-right" size={22} color="black" />
             </View>
-          </View>
+          </Pressable>
           <View>
             <FlatList
               data={stores}

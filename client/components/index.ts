@@ -12,6 +12,7 @@ import OnBoardingScreen from './OnBoardingScreen';
 import ProductCard from './ProductCard';
 import ProfileIcon from './ProfileIcon';
 import StoreCard from './StoreCard';
+import StoreLogo from './StoreLogo';
 import Stores from './Stores';
 export {
   OnBoardingItem,
@@ -29,4 +30,5 @@ export {
   Featured,
   Stores,
   Collections,
+  StoreLogo,
 };
