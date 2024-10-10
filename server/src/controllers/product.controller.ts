@@ -38,9 +38,7 @@ const getAllProducts = async (req: Request, res: Response) => {
                 },
               }
             : {}),
-          ...(category
-            ? { category: { $regex: category, $options: 'i' } }
-            : {}),
+          ...(category ? { $expr: { $eq: ['$category', category] } } : {}),
         },
       },
       {

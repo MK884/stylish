@@ -1,4 +1,5 @@
 import { CategoryLabel, Masonary } from '@/components';
+import { categories } from '@/constants';
 import { getAllProducts, usePrivateAxios } from '@/services';
 import { MyText } from '@/ui';
 import Icon from '@expo/vector-icons/FontAwesome';
@@ -31,18 +32,6 @@ const feed = () => {
   const [isListLoading, setIsListLoading] = React.useState<boolean>(false);
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
 
-  const categories: category[] = [
-    'dresses',
-    'hats',
-    'jacket',
-    'jeans',
-    'pants',
-    'shirts',
-    'skirts',
-    'socks',
-    't-shirts',
-    'top',
-  ];
   const [selectedCategory, setSelectedCategory] = React.useState<
     category | 'All'
   >('All');
@@ -120,8 +109,8 @@ const feed = () => {
     // setLongPressStarted(true);
     const activeProduct = products?.filter((item) => item?._id === id);
     // console.log({...activeProduct[0]});
-    
-    setProduct({...activeProduct[0]});
+
+    setProduct({ ...activeProduct[0] });
   };
 
   const onTouchMove = () => {
@@ -256,7 +245,7 @@ const feed = () => {
             </MyText>
             <View className="bg-white rounded-full border border-[#dadada] w-12 h-12 overflow-hidden">
               <Image
-                source={{uri:product?.store?.[0]?.avatarUrl}}
+                source={{ uri: product?.store?.[0]?.avatarUrl }}
                 style={{ resizeMode: 'contain', height: '100%', width: '100%' }}
               />
             </View>

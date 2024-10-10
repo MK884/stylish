@@ -9,12 +9,15 @@ interface CategoryLabelProps extends PressableProps {
   [key: string]: any;
 }
 
-const CategoryLabel = ({ label, isSelected, ...rest }: CategoryLabelProps) => {
+const CategoryLabel = ({
+  label,
+  isSelected,
+  onPress,
+  ...rest
+}: CategoryLabelProps) => {
   return (
-    <Animated.View
-      entering={FadeInRight.duration(400)}
-    >
-      <Pressable {...rest} className="mr-2">
+    <Animated.View entering={FadeInRight.duration(400)}>
+      <Pressable {...rest} className="mr-2" onPress={onPress}>
         <MyText
           className={`font-semibold text-lg`}
           style={{

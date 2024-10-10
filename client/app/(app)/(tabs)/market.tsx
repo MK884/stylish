@@ -7,10 +7,15 @@ import {
 } from '@/components';
 import Icon from '@expo/vector-icons/FontAwesome';
 import React from 'react';
-import { TextInput, View } from 'react-native';
+import { TextInput, View, FlatList, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const tabs = [
+interface tab {
+  label: string;
+  content: React.ReactNode;
+}
+
+const tabs: tab[] = [
   {
     label: 'Featured',
     content: <Featured />,
@@ -61,6 +66,7 @@ const market = () => {
             isSelected={item?.label === selectedCategory}
             label={item.label}
             onPress={() => setSelectedCategory(item.label)}
+            key={item.label}
           />
         ))}
       </View>

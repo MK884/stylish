@@ -20,7 +20,7 @@ const Featured = () => {
   let paddingHorizontal = 22;
 
   const [page, setPage] = React.useState<number>(0);
-  const [limit, setLimit] = React.useState<number>(5);
+  const [limit, setLimit] = React.useState<number>(15);
   const [total, setTotal] = React.useState<number>(0);
   const [stores, setStores] = React.useState<Array<IStore> | []>([]);
   const [productOnSale, setProductOnSale] = React.useState<
