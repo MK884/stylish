@@ -12,9 +12,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAllProducts, getProductById, usePrivateAxios } from '@/services';
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'react-native';
-import { MyText } from '@/ui';
+import { Button, MyText } from '@/ui';
 import {
   Accordion,
+  BottomSheet,
   ImageBox,
   ImageModal,
   ProductCard,
@@ -120,8 +121,15 @@ const ProductPage = () => {
 
     // const top = interpolate(
     //   offsetY.value,
-    //   [0, SCROLL_DISTANCE],
-    //   [0, -SCROLL_DISTANCE]
+    //   [0, MAX_IMAGE_HEIGHT + MIN_IMAGE_HEIGHT],
+    //   [0, -MIN_IMAGE_HEIGHT],
+    //   Extrapolation.CLAMP
+    // );
+    // const opacity = interpolate(
+    //   offsetY.value,
+    //   [0, MAX_IMAGE_HEIGHT],
+    //   [1, 0],
+    //   Extrapolation.CLAMP
     // );
 
     return { height, width };
@@ -129,7 +137,7 @@ const ProductPage = () => {
 
   return (
     <SafeAreaView className="bg-white  flex-1">
-      <View className="my-4" style={{ width, paddingHorizontal }}>
+      <View className="py-2" style={{ width, paddingHorizontal }}>
         <Pressable onPress={() => router.back()}>
           <Feather name="arrow-left" size={28} color="black" />
         </Pressable>
@@ -138,11 +146,11 @@ const ProductPage = () => {
         {isLoading ? (
           <MyText>Loading...</MyText>
         ) : (
-          <View className="flex-1">
+          <View className="flex-1 ">
             <View className="mb-2">
               <FlatList
                 data={product?.productImg}
-                pagingEnabled
+                // pagingEnabled
                 renderItem={({ item, index }) => (
                   <ImageBox
                     src={item.src}
@@ -164,6 +172,8 @@ const ProductPage = () => {
             <Animated.ScrollView
               showsVerticalScrollIndicator={false}
               onScroll={handleScroll}
+              scrollEventThrottle={20}
+              // style={{ flex: 1 }}
             >
               <View
                 className="flex-row items-center justify-between min-h-20 gap-1 my-2"
@@ -254,8 +264,19 @@ const ProductPage = () => {
               </View>
               <View>
                 <Accordion
-                  data={<MyText>{product?.description}</MyText>}
-                  title="description"
+                  data={
+                    <View className="">
+                      <MyText className="font-[400] text-left text-black capitalize my-1">
+                        Description
+                      </MyText>
+                      <MyText>{product?.description}</MyText>
+                      <MyText className="font-[400] text-left text-black capitalize my-1">
+                        Available
+                      </MyText>
+                      <MyText>Quantity : {product?.quantity}</MyText>
+                    </View>
+                  }
+                  title="about product"
                 />
                 <Accordion
                   data={<MyText>{product?.store[0].description}</MyText>}
@@ -308,6 +329,11 @@ const ProductPage = () => {
             </Animated.ScrollView>
           </View>
         )}
+        <Button
+          title="Add to Cart"
+          tailwindClass="rounded-none w-full absolute bottom-0"
+        />
+        <BottomSheet />
       </View>
     </SafeAreaView>
   );
