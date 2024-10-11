@@ -5,6 +5,8 @@ import Collections from './Collections';
 import DisplayProducts from './DisplayProducts';
 import Divider from './Divider';
 import Featured from './Featured';
+import ImageBox from './ImageBox';
+import ImageModal from './ImageModal';
 import InputModal from './InputModal';
 import Masonary from './Masonary';
 import NoProducts from './NoProducts';
@@ -33,4 +35,6 @@ export {
   Collections,
   StoreLogo,
   Accordion,
+  ImageModal,
+  ImageBox,
 };

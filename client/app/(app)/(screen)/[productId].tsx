@@ -4,17 +4,30 @@ import {
   Pressable,
   Dimensions,
   ToastAndroid,
-  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getProductById, usePrivateAxios } from '@/services';
+import { getAllProducts, getProductById, usePrivateAxios } from '@/services';
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'react-native';
 import { MyText } from '@/ui';
-import { Accordion, Divider, StoreLogo } from '@/components';
+import {
+  Accordion,
+  ImageBox,
+  ImageModal,
+  ProductCard,
+  StoreLogo,
+} from '@/components';
 import { colorCode } from '@/constants';
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,38 +35,8 @@ const MAX_IMAGE_WIDTH = width - 32;
 const MIN_IMAGE_WIDTH = width / 3;
 const MAX_IMAGE_HEIGHT = 500;
 const MIN_IMAGE_HEIGHT = 120;
-
-const ImageBox = ({
-  src,
-  total,
-  index,
-  height = MAX_IMAGE_HEIGHT,
-  width = MAX_IMAGE_WIDTH,
-}: {
-  src: string;
-  total: number;
-  index: number;
-  height?: number;
-  width?: number;
-}) => {
-  const radius = 25;
-
-  return (
-    <View
-      style={{
-        width,
-        height,
-        borderTopLeftRadius: index === 0 ? radius : 0,
-        borderBottomLeftRadius: index === 0 ? radius : 0,
-        borderTopRightRadius: index === total - 1 ? radius : 0,
-        borderBottomRightRadius: index === total - 1 ? radius : 0,
-        overflow: 'hidden',
-      }}
-    >
-      <Image source={{ uri: src }} style={{ resizeMode: 'cover', flex: 1 }} />
-    </View>
-  );
-};
+const SCROLL_DISTANCE = MAX_IMAGE_HEIGHT - MIN_IMAGE_HEIGHT;
+// const SCROLL_DISTANCE = 100;
 
 const ProductPage = () => {
   const { productId } = useLocalSearchParams();
@@ -63,6 +46,7 @@ const ProductPage = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [selectedSize, setSelectedSize] = React.useState<size | 'size'>('size');
   const [product, setProduct] = React.useState<IProduct | null>(null);
+  const [otherProducts, setOtherProducts] = React.useState<IProduct[] | []>([]);
 
   const getProduct = async () => {
     if (!productId) return;
@@ -84,14 +68,64 @@ const ProductPage = () => {
     }
   };
 
+  const getOtherProducts = async () => {
+    try {
+      const response = await getAllProducts({ axios, limit: 81 });
+
+      if (response?.products) {
+        const products = response.products
+          ?.filter((item: IProduct) => item?._id !== product?._id)
+          .slice(0, 8);
+
+        setOtherProducts(products);
+      }
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    }
+  };
+
   React.useEffect(() => {
     getProduct();
+    getOtherProducts();
   }, []);
 
   const getSalePrice = (disscount: number, price: number) => {
     const finalPrice = (disscount / 100) * price;
     return price - finalPrice;
   };
+
+  const offsetY = useSharedValue(0);
+
+  const handleScroll = useAnimatedScrollHandler((e) => {
+    offsetY.value = e.contentOffset.y;
+  });
+
+  const animatedImageStyle = useAnimatedStyle(() => {
+    const height = interpolate(
+      offsetY.value,
+      [0, SCROLL_DISTANCE],
+      [MAX_IMAGE_HEIGHT, MIN_IMAGE_HEIGHT],
+      Extrapolation.CLAMP
+    );
+
+    const width = interpolate(
+      offsetY.value,
+      [0, SCROLL_DISTANCE],
+      [MAX_IMAGE_WIDTH, MIN_IMAGE_WIDTH],
+      Extrapolation.CLAMP
+    );
+
+    // const top = interpolate(
+    //   offsetY.value,
+    //   [0, SCROLL_DISTANCE],
+    //   [0, -SCROLL_DISTANCE]
+    // );
+
+    return { height, width };
+  });
 
   return (
     <SafeAreaView className="bg-white  flex-1">
@@ -105,7 +139,7 @@ const ProductPage = () => {
           <MyText>Loading...</MyText>
         ) : (
           <View className="flex-1">
-            <View>
+            <View className="mb-2">
               <FlatList
                 data={product?.productImg}
                 pagingEnabled
@@ -114,6 +148,7 @@ const ProductPage = () => {
                     src={item.src}
                     index={index}
                     total={product ? product.productImg.length : 0}
+                    AnimatedStyle={animatedImageStyle}
                   />
                 )}
                 bounces={false}
@@ -126,12 +161,15 @@ const ProductPage = () => {
                 }}
               />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <Animated.ScrollView
+              showsVerticalScrollIndicator={false}
+              onScroll={handleScroll}
+            >
               <View
                 className="flex-row items-center justify-between min-h-20 gap-1 my-2"
-                style={{ paddingHorizontal, width, flex: 1 }}
+                style={{ paddingHorizontal, width }}
               >
-                <View className="flex-1">
+                <View className="">
                   <MyText
                     className="capitalize text-[16px] font-[300]"
                     textBreakStrategy="highQuality"
@@ -237,7 +275,37 @@ const ProductPage = () => {
                   title="shipping and return policies"
                 />
               </View>
-            </ScrollView>
+              <View
+                style={{
+                  marginVertical: paddingHorizontal,
+                }}
+              >
+                <View
+                  className="py-4"
+                  style={{ paddingLeft: paddingHorizontal }}
+                >
+                  <MyText className="text-lg capitalize">
+                    Complete your outfit
+                  </MyText>
+                </View>
+                <View className=" flex-wrap flex-row items-center justify-center">
+                  {/* <FlatList
+                    data={otherProducts}
+                    renderItem={({ item }) => (
+                      <ProductCard item={item} key={item._id} />
+                    )}
+                    keyExtractor={(item) => item._id}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ paddingHorizontal }}
+                  /> */}
+                  {otherProducts?.map((product) => (
+                    <ProductCard item={product} key={product._id} width={180} />
+                  ))}
+                </View>
+              </View>
+            </Animated.ScrollView>
           </View>
         )}
       </View>
