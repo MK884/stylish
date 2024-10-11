@@ -1,27 +1,25 @@
 import {
-  View,
-  FlatList,
-  Pressable,
-  Dimensions,
-  ToastAndroid,
-  ActivityIndicator,
-} from 'react-native';
-import React from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { getAllProducts, getProductById, usePrivateAxios } from '@/services';
-import Feather from '@expo/vector-icons/Feather';
-import { Image } from 'react-native';
-import { Button, MyText } from '@/ui';
-import {
   Accordion,
-  BottomSheet,
   ImageBox,
-  ImageModal,
   ProductCard,
+  Sheet,
   StoreLogo,
 } from '@/components';
-import { colorCode } from '@/constants';
+import { ClothesSize, colorCode } from '@/constants';
+import { getAllProducts, getProductById, usePrivateAxios } from '@/services';
+import { Button, MyText } from '@/ui';
+import Feather from '@expo/vector-icons/Feather';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { router, useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import {
+  Dimensions,
+  FlatList,
+  Pressable,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -29,6 +27,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,6 +38,47 @@ const MIN_IMAGE_HEIGHT = 120;
 const SCROLL_DISTANCE = MAX_IMAGE_HEIGHT - MIN_IMAGE_HEIGHT;
 // const SCROLL_DISTANCE = 100;
 
+const SizeLabel = ({
+  isDisable,
+  isSelected,
+  label,
+  onPress,
+  size,
+}: {
+  label: string;
+  size: number;
+  isSelected: boolean;
+  onPress: () => void;
+  isDisable: boolean;
+}) => {
+  return (
+    <Pressable
+      className={`items-center justify-between flex-row w-full px-6 my-1 h-12`}
+      onPress={onPress}
+      disabled={isDisable}
+    >
+      <View className="flex-1 flex-row gap-4">
+        <MyText
+          className={`font-bold text-[16px] ${isDisable ? 'text-[#dadada]' : ''}`}
+        >
+          {size}
+          {isDisable}
+        </MyText>
+        <MyText
+          className={`uppercase text-[16px] ${isDisable ? 'text-[#dadada]' : ''}`}
+        >
+          {label}
+        </MyText>
+      </View>
+      {isSelected && (
+        <View>
+          <MaterialIcons name="done" size={24} color="black" />
+        </View>
+      )}
+    </Pressable>
+  );
+};
+
 const ProductPage = () => {
   const { productId } = useLocalSearchParams();
   let paddingHorizontal = 22;
@@ -48,6 +88,8 @@ const ProductPage = () => {
   const [selectedSize, setSelectedSize] = React.useState<size | 'size'>('size');
   const [product, setProduct] = React.useState<IProduct | null>(null);
   const [otherProducts, setOtherProducts] = React.useState<IProduct[] | []>([]);
+
+  const sheetRef = React.useRef<BottomSheet>(null);
 
   const getProduct = async () => {
     if (!productId) return;
@@ -119,21 +161,11 @@ const ProductPage = () => {
       Extrapolation.CLAMP
     );
 
-    // const top = interpolate(
-    //   offsetY.value,
-    //   [0, MAX_IMAGE_HEIGHT + MIN_IMAGE_HEIGHT],
-    //   [0, -MIN_IMAGE_HEIGHT],
-    //   Extrapolation.CLAMP
-    // );
-    // const opacity = interpolate(
-    //   offsetY.value,
-    //   [0, MAX_IMAGE_HEIGHT],
-    //   [1, 0],
-    //   Extrapolation.CLAMP
-    // );
-
     return { height, width };
   });
+
+  const snapToIndex = (index: number) => sheetRef?.current?.snapToIndex(index);
+  const closeSheet = () => sheetRef?.current?.close();
 
   return (
     <SafeAreaView className="bg-white  flex-1">
@@ -179,7 +211,7 @@ const ProductPage = () => {
                 className="flex-row items-center justify-between min-h-20 gap-1 my-2"
                 style={{ paddingHorizontal, width }}
               >
-                <View className="">
+                <View className="flex-1">
                   <MyText
                     className="capitalize text-[16px] font-[300]"
                     textBreakStrategy="highQuality"
@@ -187,7 +219,7 @@ const ProductPage = () => {
                     {product?.title}
                   </MyText>
                 </View>
-                <View>
+                <View className="">
                   <StoreLogo
                     src={product?.store[0].avatarUrl}
                     height={44}
@@ -254,7 +286,10 @@ const ProductPage = () => {
                     </Pressable>
                   </View>
                   <View className="flex-1">
-                    <Pressable className="h-14 flex justify-center items-center rounded-xl border bg-white border-[#dadada] overflow-hidden">
+                    <Pressable
+                      className="h-14 flex justify-center items-center rounded-xl border bg-white border-[#dadada] overflow-hidden"
+                      onPress={() => snapToIndex(0)}
+                    >
                       <MyText className="text-black text-[16px] font-bold capitalize">
                         {selectedSize}
                       </MyText>
@@ -310,17 +345,6 @@ const ProductPage = () => {
                   </MyText>
                 </View>
                 <View className=" flex-wrap flex-row items-center justify-center">
-                  {/* <FlatList
-                    data={otherProducts}
-                    renderItem={({ item }) => (
-                      <ProductCard item={item} key={item._id} />
-                    )}
-                    keyExtractor={(item) => item._id}
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ paddingHorizontal }}
-                  /> */}
                   {otherProducts?.map((product) => (
                     <ProductCard item={product} key={product._id} width={180} />
                   ))}
@@ -333,8 +357,28 @@ const ProductPage = () => {
           title="Add to Cart"
           tailwindClass="rounded-none w-full absolute bottom-0"
         />
-        <BottomSheet />
       </View>
+
+      {/* bottom sheet */}
+      <Sheet ref={sheetRef} index={-1} snapPoints={['50%', '90%']}>
+        <View className="h-full items-center">
+          <MyText className="text-black text-[18px] font-bold">Size</MyText>
+          <View>
+            {ClothesSize.map((item) => (
+              <SizeLabel
+                isDisable={!product?.size.includes(item.size) || false}
+                onPress={() => {
+                  setSelectedSize(item.size);
+                  closeSheet();
+                }}
+                isSelected={selectedSize === item.size}
+                label={item.label}
+                size={item.size}
+              />
+            ))}
+          </View>
+        </View>
+      </Sheet>
     </SafeAreaView>
   );
 };

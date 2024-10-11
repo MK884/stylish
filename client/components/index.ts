@@ -1,6 +1,6 @@
 import Accordion from './Accordion';
 import Banner from './Banner';
-import BottomSheet from './BottomSheet';
+import Sheet from './Sheet';
 import CategoryLabel from './CategoryLabel';
 import Collections from './Collections';
 import DisplayProducts from './DisplayProducts';
@@ -38,5 +38,5 @@ export {
   Accordion,
   ImageModal,
   ImageBox,
-  BottomSheet,
+  Sheet,
 };

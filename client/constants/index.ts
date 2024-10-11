@@ -90,3 +90,34 @@ export const colorCode = {
   pink: 'pink',
   orange: 'orange',
 };
+
+export const ClothesSize: { size: size; label: string }[] = [
+  {
+    size: 22,
+    label: 'xxs',
+  },
+  {
+    size: 24,
+    label: 'xs',
+  },
+  {
+    size: 26,
+    label: 's',
+  },
+  {
+    size: 28,
+    label: 'm',
+  },
+  {
+    size: 30,
+    label: 'l',
+  },
+  {
+    size: 32,
+    label: 'xl',
+  },
+  {
+    size: 34,
+    label: 'xxl',
+  },
+];
