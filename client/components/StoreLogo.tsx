@@ -1,25 +1,42 @@
 import { MyText } from '@/ui';
+import { Router } from 'expo-router';
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, StyleProp, ViewStyle } from 'react-native';
 import { Pressable, View } from 'react-native';
 
 interface StoreLogoProps {
   src: string;
   name?: string;
-  height?: number;
-  width?: number;
+  size?: number;
+  router: Router;
+  storeId: string;
+  styles?: StyleProp<ViewStyle>;
 }
 
-const StoreLogo = ({ name, src, height = 96, width = 96 }: StoreLogoProps) => {
+const StoreLogo = ({
+  name,
+  src,
+  size = 96,
+  router,
+  storeId,
+  styles,
+}: StoreLogoProps) => {
+  // const imageS = name ? size - size / 3 : size;
+
   return (
-    <View style={{ height, width }}>
+    <View style={styles}>
       <Pressable
-        style={{ flex: 1 }}
-        className="flex items-center justify-center gap-4 mx-2"
+        className="flex items-center justify-center"
+        onPress={() =>
+          router.push({
+            pathname: '/(app)/(screen)/storePage',
+            params: { storeId },
+          })
+        }
       >
         <View
           className="rounded-full  overflow-hidden border bg-white border-[#dadada]"
-          style={{ height, width }}
+          style={{ height: size, aspectRatio: 1 }}
         >
           <Image
             source={{ uri: src }}
@@ -30,8 +47,14 @@ const StoreLogo = ({ name, src, height = 96, width = 96 }: StoreLogoProps) => {
           />
         </View>
         {name && (
-          <View>
-            <MyText className="text-neutral-600 font-normal tracking-widest text-center">
+          <View
+            style={{
+              height: size / 3,
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <MyText className="text-neutral-600 font-normal tracking-widest">
               {name}
             </MyText>
           </View>

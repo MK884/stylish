@@ -18,6 +18,8 @@ import ProfileIcon from './ProfileIcon';
 import StoreCard from './StoreCard';
 import StoreLogo from './StoreLogo';
 import Stores from './Stores';
+import AboutStore from './AboutStore';
+import StoreOverview from './StoreOverview';
 export {
   OnBoardingItem,
   OnBoardingScreen,
@@ -39,4 +41,6 @@ export {
   ImageModal,
   ImageBox,
   Sheet,
+  AboutStore,
+  StoreOverview,
 };

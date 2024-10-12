@@ -10,7 +10,7 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Feather from '@expo/vector-icons/Feather';
 import { MyText } from '@/ui';
-import { router } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { StoreLogo } from '@/components';
 import { getAllStore, usePrivateAxios } from '@/services';
 
@@ -18,6 +18,8 @@ const stores = () => {
   const { width } = Dimensions.get('window');
   let paddingHorizontal = 22;
   const axios = usePrivateAxios();
+
+  const router = useRouter();
 
   const [stores, setStores] = React.useState<Array<IStore> | []>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -78,15 +80,27 @@ const stores = () => {
             <ActivityIndicator size={'large'} />
           </View>
         ) : (
-          <FlatList
-            data={stores}
-            renderItem={({ item, index }) => (
-              <StoreLogo key={index} name={item.name} src={item.avatarUrl} />
-            )}
-            numColumns={3}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ gap: 40, alignItems: 'center' }}
-          />
+          <View className="">
+            <FlatList
+              data={stores}
+              renderItem={({ item, index }) => (
+                <StoreLogo
+                  key={index}
+                  name={item.name}
+                  src={item.avatarUrl}
+                  router={router}
+                  storeId={item._id}
+                  styles={{ marginHorizontal: 18 }}
+                />
+              )}
+              numColumns={3}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                gap: 40,
+                alignItems: 'center',
+              }}
+            />
+          </View>
         )}
       </View>
     </SafeAreaView>

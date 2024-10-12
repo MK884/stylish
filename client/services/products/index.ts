@@ -84,7 +84,7 @@ const getProductsByStoreId = async ({
   if (!axios || !storeId) return;
 
   try {
-    const response = await axios.get(`/products/store/${storeId}`);
+    const response = await axios.get(`/product/store/${storeId}`);
 
     return response?.data?.data;
   } catch (error) {

@@ -3,7 +3,7 @@ import { getProductById, usePrivateAxios } from '@/services';
 import { MyText } from '@/ui';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
   ActivityIndicator,
@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const ModalView = () => {
   const paddingHorizontal = 22;
   const axios = usePrivateAxios();
+  const router = useRouter();
 
   const { id } = useLocalSearchParams<{ id: string }>();
   const [product, setProduct] = React.useState<IProduct | null>(null);
@@ -68,11 +69,12 @@ const ModalView = () => {
                     {product?.store?.[0]?.name}
                   </MyText>
                 </View>
-                <View>
+                <View style={{ height: 54 }}>
                   <StoreLogo
                     src={product?.store?.[0]?.avatarUrl}
-                    height={54}
-                    width={54}
+                    size={54}
+                    router={router}
+                    storeId={product?.store?.[0]?._id}
                   />
                 </View>
               </View>

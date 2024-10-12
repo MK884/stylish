@@ -11,7 +11,7 @@ import { Button, MyText } from '@/ui';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
   Dimensions,
@@ -83,6 +83,7 @@ const ProductPage = () => {
   const { productId } = useLocalSearchParams();
   let paddingHorizontal = 22;
   const axios = usePrivateAxios();
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [selectedSize, setSelectedSize] = React.useState<size | 'size'>('size');
@@ -222,8 +223,9 @@ const ProductPage = () => {
                 <View className="">
                   <StoreLogo
                     src={product?.store[0].avatarUrl}
-                    height={44}
-                    width={44}
+                    size={44}
+                    router={router}
+                    storeId={product?.store[0]?._id}
                   />
                 </View>
               </View>

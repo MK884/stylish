@@ -89,7 +89,7 @@ interface IProduct {
   productImg: Array<IProductImage>;
   quantity?: number;
   discount?: number;
-  rating?:number;
+  rating?: number;
 }
 
 interface StoreCardProps {
@@ -102,4 +102,19 @@ interface ProductCard {
   item: IProduct;
   height?: number;
   width?: number;
+}
+
+interface tab {
+  label: string;
+  content: React.ReactNode;
+}
+
+interface AboutStore {
+  store: IStore;
+  total?: number;
+}
+
+interface StoreOverview {
+  store: IStore;
+  products: Array<IProduct>;
 }

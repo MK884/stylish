@@ -31,6 +31,12 @@ const ScreenLayout = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="storePage"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </GestureHandlerRootView>
   );
