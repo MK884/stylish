@@ -54,7 +54,7 @@ const getProductById = async ({
   id: string;
   axios: AxiosInstance;
 }) => {
-  if (!axios || !id) return;
+  if (!axios && !id) return;
 
   try {
     const response = await axios.get(`/product/${id}`);
@@ -74,4 +74,35 @@ const getProductById = async ({
   }
 };
 
-export { getAllProducts, getProductById };
+const getProductsByStoreId = async ({
+  storeId,
+  axios,
+}: {
+  storeId: string;
+  axios: AxiosInstance;
+}) => {
+  if (!axios || !storeId) return;
+
+  try {
+    const response = await axios.get(`/products/store/${storeId}`);
+
+    return response?.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      // server error
+      const serverError = error?.response?.data;
+
+      console.log(
+        `server error in getProductsByStoreId: ${serverError?.message}`
+      );
+
+      throw new Error(
+        serverError?.message || 'server error in getProductsByStoreId'
+      );
+    }
+    console.error('getProductsByStoreId error', error);
+    throw new Error('getProductsByStoreId error due to some reasone');
+  }
+};
+
+export { getAllProducts, getProductById, getProductsByStoreId };

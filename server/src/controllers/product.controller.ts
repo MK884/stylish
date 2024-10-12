@@ -130,4 +130,59 @@ const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllProducts, getProductById };
+const getProductsByStoreId = async (req: Request, res: Response) => {
+  const { id } = req?.params;
+
+  if (!id) {
+    res.status(406).json({
+      statusCode: 406,
+      success: false,
+      message: 'invalid id',
+    });
+    return;
+  }
+
+  try {
+    const response = await Product.aggregate([
+      {
+        $lookup: {
+          from: 'stores',
+          localField: 'store',
+          foreignField: '_id',
+          as: 'store',
+        },
+      },
+      {
+        $match: {
+          'store._id': new mongoose.Types.ObjectId(id),
+        },
+      },
+    ]);
+
+    if (!response.length) {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'product not found',
+      });
+      return;
+    }
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'product found',
+      data: response,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
+    }
+  }
+};
+
+export { getAllProducts, getProductById, getProductsByStoreId };
