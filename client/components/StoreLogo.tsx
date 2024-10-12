@@ -12,7 +12,7 @@ interface StoreLogoProps {
 
 const StoreLogo = ({ name, src, height = 96, width = 96 }: StoreLogoProps) => {
   return (
-    <View>
+    <View style={{ height, width }}>
       <Pressable
         style={{ flex: 1 }}
         className="flex items-center justify-center gap-4 mx-2"

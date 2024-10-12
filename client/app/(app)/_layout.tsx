@@ -16,6 +16,10 @@ const Layout = () => {
     >
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="(screen)" />
+      <Stack.Screen
+        name="[id]"
+        options={{ presentation: 'transparentModal' }}
+      />
     </Stack>
   );
 };

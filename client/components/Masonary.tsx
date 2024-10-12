@@ -2,6 +2,7 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 import NoProducts from './NoProducts';
 import ProductImage from './ProductImage';
+import { Router } from 'expo-router';
 
 interface MasonaryProps {
   isLoading: boolean;
@@ -11,8 +12,7 @@ interface MasonaryProps {
   page: number;
   isListLoading: boolean;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-  onPressIn: (id:string)=>void;
-  onPressOut: ()=>void;
+  router: Router;
 }
 
 const Masonary = ({
@@ -23,8 +23,7 @@ const Masonary = ({
   page,
   setPage,
   isListLoading,
-  onPressIn,
-  onPressOut,
+  router,
 }: MasonaryProps) => {
   return (
     <ScrollView
@@ -62,7 +61,12 @@ const Masonary = ({
                     ?.filter((_, idx) => idx % 2 !== 0)
                     ?.map((item, idx) => {
                       return (
-                        <ProductImage item={item} key={item._id} index={idx} onPress={()=>onPressIn(item._id)} onPressOut={onPressOut}/>
+                        <ProductImage
+                          item={item}
+                          key={item._id}
+                          index={idx}
+                          router={router}
+                        />
                       );
                     })}
                 </View>
@@ -71,7 +75,12 @@ const Masonary = ({
                     ?.filter((_, idx) => idx % 2 === 0)
                     ?.map((item, idx) => {
                       return (
-                        <ProductImage item={item} key={item._id} index={idx} onPress={()=>onPressIn(item._id)} onPressOut={onPressOut}/>
+                        <ProductImage
+                          item={item}
+                          key={item._id}
+                          index={idx}
+                          router={router}
+                        />
                       );
                     })}
                 </View>

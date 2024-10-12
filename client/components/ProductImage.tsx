@@ -1,37 +1,30 @@
 import { MyText } from '@/ui';
+import { Router } from 'expo-router';
 import React from 'react';
-import { Dimensions, Image, Pressable, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const ProductImage = ({
   item,
   index,
-  onTouchMove,
-  onPress,
-  onPressOut,
   height,
+  router,
 }: {
   item: IProduct;
   index: number;
-  onPress?: () => void;
-  onTouchMove?: () => void;
-  onPressOut?: () => void;
   height?: number;
+  router: Router;
 }) => {
-  // const { height, width } = Dimensions.get("window");
-
   return (
     <Animated.View
       style={{ flex: 1 }}
       entering={FadeInDown.delay(index % 3 === 0 ? 500 : 600).springify()}
     >
       <Pressable
-        // onLongPress={() => item?.onLongPress(item?.item?.id)}
-        // onPressOut={item?.onPressOut}
-        onLongPress={onPress}
-        onPressOut={onPressOut}
-        onTouchMove={onTouchMove}
         style={{ flex: 1 }}
+        onPressIn={() =>
+          router.push({ pathname: '/(app)/[id]', params: { id: item._id } })
+        }
       >
         <>
           <View

@@ -38,25 +38,6 @@ const ImageBox = ({
 }) => {
   const radius = 25;
   const [isVisible, setIsVisible] = React.useState<boolean>(false);
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
-  // const animatedImageStyle = useAnimatedStyle(() => {
-  //   const height = interpolate(
-  //     y,
-  //     [0, SCROLL_DISTANCE],
-  //     [MAX_IMAGE_HEIGHT, MIN_IMAGE_HEIGHT],
-  //     Extrapolation.CLAMP
-  //   );
-
-  //   const width = interpolate(
-  //     y,
-  //     [0, SCROLL_DISTANCE],
-  //     [MAX_IMAGE_WIDTH, MIN_IMAGE_WIDTH],
-  //     Extrapolation.CLAMP
-  //   );
-
-  //   return { height, width };
-  // });
 
   return (
     <Animated.View
@@ -74,21 +55,7 @@ const ImageBox = ({
       ]}
     >
       <Pressable onPress={() => setIsVisible(true)} style={{ flex: 1 }}>
-        {isLoading ? (
-          <View className="flex-1 items-center justify-center">
-            <ActivityIndicator size={'small'} />
-          </View>
-        ) : (
-          <Image
-            source={{ uri: src }}
-            style={{ resizeMode: 'cover', flex: 1 }}
-            // onLoadStart={() => {
-            //   if (!isLoading) setIsLoading(true);
-            // }}
-            // onLoadEnd={() => setIsLoading(false)}
-            // onError={() => setIsLoading(false)}
-          />
-        )}
+        <Image source={{ uri: src }} style={{ resizeMode: 'cover', flex: 1 }} />
       </Pressable>
 
       <ImageModal isVisible={isVisible} setIsVisible={setIsVisible} uri={src} />
