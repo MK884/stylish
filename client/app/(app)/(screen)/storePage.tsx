@@ -15,6 +15,13 @@ import { MyText } from '@/ui';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AboutStore, CategoryLabel, StoreOverview } from '@/components';
 import Feather from '@expo/vector-icons/Feather';
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 const storePage = () => {
   const { storeId } = useLocalSearchParams<{ storeId: string }>();
@@ -22,6 +29,7 @@ const storePage = () => {
   if (!storeId) return;
 
   const LOGO_SIZE = 120;
+  const HEADER_HEIGHT = 70;
   const paddingHorizontal = 22;
 
   const axios = usePrivateAxios();
@@ -79,53 +87,243 @@ const storePage = () => {
     },
   ];
 
+  const offsetY = useSharedValue(0);
+
+  const handleScroll = useAnimatedScrollHandler((e) => {
+    offsetY.value = e.contentOffset.y;
+    console.log('y => ', e.contentOffset.y);
+  });
+
+  const animatedImageStyle = useAnimatedStyle(() => {
+    const translateY = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE + HEADER_HEIGHT],
+      // [0, offsetY.value - (LOGO_SIZE + HEADER_HEIGHT / 2)],
+      [0, offsetY.value - (LOGO_SIZE + HEADER_HEIGHT - 8)],
+      // [0, -(LOGO_SIZE - HEADER_HEIGHT)],
+      Extrapolation.CLAMP
+    );
+    const translateX = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE + HEADER_HEIGHT],
+      [0, -300],
+      Extrapolation.CLAMP
+    );
+
+    const scale = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE + HEADER_HEIGHT],
+      [1, 0.4],
+      {
+        extrapolateRight: Extrapolation.CLAMP,
+      }
+    );
+    return {
+      transform: [
+        {
+          translateY,
+        },
+        {
+          scale,
+        },
+        {
+          translateX,
+        },
+      ],
+    };
+  });
+  const animatedTextStyle = useAnimatedStyle(() => {
+    const translateY = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE],
+      // [0, offsetY.value - (LOGO_SIZE * 2 + HEADER_HEIGHT / 2)],
+      [0, offsetY.value - (LOGO_SIZE + HEADER_HEIGHT * 2 + 10)],
+      // [0, -(LOGO_SIZE - HEADER_HEIGHT)],
+      Extrapolation.CLAMP
+    );
+    const translateX = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE],
+      // [0, -(100 + LOGO_SIZE / 4)],
+      [0, -LOGO_SIZE],
+      Extrapolation.CLAMP
+    );
+
+    const scale = interpolate(offsetY.value, [0, LOGO_SIZE], [1, 0.6], {
+      extrapolateRight: Extrapolation.CLAMP,
+    });
+    return {
+      transform: [
+        {
+          translateY,
+        },
+        {
+          scale,
+        },
+        {
+          translateX,
+        },
+      ],
+    };
+  });
+  const animatedTagStyle = useAnimatedStyle(() => {
+    const translateY = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE],
+      // [0, offsetY.value - (LOGO_SIZE * 2 + HEADER_HEIGHT * 2)],
+      [0, -(LOGO_SIZE / 2 + HEADER_HEIGHT * 4 + 12)],
+      // [0, -(LOGO_SIZE - HEADER_HEIGHT)],
+      Extrapolation.CLAMP
+    );
+    const translateX = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE],
+      [0, LOGO_SIZE],
+      Extrapolation.CLAMP
+    );
+
+    const scale = interpolate(offsetY.value, [0, LOGO_SIZE], [1, 0.4], {
+      extrapolateRight: Extrapolation.CLAMP,
+    });
+    return {
+      transform: [
+        {
+          translateY,
+        },
+        // {
+        //   scale,
+        // },
+        {
+          translateX,
+        },
+      ],
+    };
+  });
+
+  const sectionStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(offsetY.value, [0, LOGO_SIZE], [1, 0]);
+    // const display = interpolate(offsetY.value, [0, LOGO_SIZE], []);
+    // const height = interpolate(offsetY.value, [0, LOGO_SIZE],[0])
+    const translateY = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE * 2 + HEADER_HEIGHT * 2],
+      [0, -offsetY.value]
+    );
+
+    const height = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE * 2 + HEADER_HEIGHT],
+      [LOGO_SIZE * 2 + HEADER_HEIGHT, 0]
+    );
+
+    return {
+      transform: [{ translateY: -offsetY.value }],
+      // top: -offsetY.value,
+      // opacity,
+    };
+  });
+
+  const scrollAnimationStyle = useAnimatedStyle(() => {
+    const flex = interpolate(offsetY.value, [0, LOGO_SIZE], [0, 1]);
+    const translateY = interpolate(
+      offsetY.value,
+      [0, LOGO_SIZE],
+      [0, -offsetY.value],
+      Extrapolation.CLAMP
+    );
+    return {
+      transform: [{ translateY }],
+    };
+  });
+
   return (
-    <SafeAreaView className="bg-white" style={{ height, width }}>
-      <View className="py-2" style={{ width, paddingHorizontal }}>
+    <SafeAreaView className="bg-white pt-4" style={{ height, width }}>
+      <View
+        className="bg-transparent"
+        style={{ paddingHorizontal, height: 25 }}
+      >
         <Pressable onPress={() => router.back()}>
           <Feather name="arrow-left" size={28} color="black" />
         </Pressable>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="flex-1 items-center space-y-2 pt-28">
-          <View
-            className="rounded-full overflow-hidden border-2 border-[#dadada] my-4"
-            style={{ height: LOGO_SIZE, aspectRatio: 1 }}
-          >
-            <Image
-              source={{ uri: store?.avatarUrl }}
-              style={{ resizeMode: 'contain', flex: 1 }}
-            />
-          </View>
-          <View>
-            <MyText className="text-black font-extrabold text-[32px] capitalize">
-              {store?.name}
-            </MyText>
-          </View>
-          <View className="flex-row gap-2">
-            <MaterialIcons name="verified" size={24} color="green" />
-            <MyText className="text-[#868687] text-[16px]">
-              Verified official store
-            </MyText>
-          </View>
+      {/*hero section */}
+      <Animated.View
+        className="items-center space-y-2 pt-28"
+        style={[sectionStyle]}
+      >
+        <Animated.View
+          className="rounded-full overflow-hidden border-4 border-[#dadada] bg-white"
+          // style={[
+          //   {
+          //     height: LOGO_SIZE,
+          //     aspectRatio: 1,
+          //     transform: [
+          //       { translateY: -(LOGO_SIZE + HEADER_HEIGHT - 8) },
+          //       { scale: 0.4 },
+          //       { translateX: -300 },
+          //     ],
+          //   },
+          // ]}
+          style={[{ height: LOGO_SIZE, aspectRatio: 1 }, animatedImageStyle]}
+        >
+          <Animated.Image
+            source={{ uri: store?.avatarUrl }}
+            style={[{ resizeMode: 'contain', height: '100%', width: '100%' }]}
+          />
+        </Animated.View>
+        <Animated.View
+          // style={{
+          //   transform: [
+          //     { translateY: -(LOGO_SIZE + HEADER_HEIGHT * 2 + 10) },
+          //     { translateX: -LOGO_SIZE / 2 },
+          //     { scale: 0.6 },
+          //   ],
+          // }}
+          style={animatedTextStyle}
+        >
+          <MyText className="text-black font-extrabold text-[32px] capitalize">
+            {store?.name}
+          </MyText>
+        </Animated.View>
+        <View className="flex-row gap-2">
+          <MaterialIcons name="verified" size={24} color="green" />
+          <MyText className="text-[#868687] text-[16px]">
+            Verified official store
+          </MyText>
         </View>
+      </Animated.View>
+      {/* tags */}
+      <Animated.View
+        // style={[
+        //   {
+        //     marginLeft: paddingHorizontal,
+        //     transform: [
+        //       { translateY: -(LOGO_SIZE / 2 + HEADER_HEIGHT * 4 + 12) },
+        //       { translateX: LOGO_SIZE },
+        //     ],
+        //   },
+        // ]}
+        style={animatedTagStyle}
+        className="flex flex-row my-2 items-center justify-center"
+      >
+        {tabs?.map((item) => (
+          <CategoryLabel
+            isSelected={item?.label === selectedCategory}
+            label={item.label}
+            onPress={() => setSelectedCategory(item.label)}
+            key={item.label}
+          />
+        ))}
+      </Animated.View>
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        bounces={false}
+      >
         <View>
-          <View
-            style={{ marginLeft: paddingHorizontal }}
-            className="flex-row my-2 items-center justify-center"
-          >
-            {tabs?.map((item) => (
-              <CategoryLabel
-                isSelected={item?.label === selectedCategory}
-                label={item.label}
-                onPress={() => setSelectedCategory(item.label)}
-                key={item.label}
-              />
-            ))}
-          </View>
           {tabs.map((tab) => tab.label === selectedCategory && tab.content)}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
