@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { MyText } from "@/ui";
+import { View, Text, TouchableOpacity } from 'react-native';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { MyText } from '@/ui';
 
 function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  let primaryColor = "#614FE0";
-  let secoundryColor = "#A8A8A9";
+  let primaryColor = '#614FE0';
+  let secoundryColor = '#A8A8A9';
 
   const Icon = {
     feed: (props: any) => (
@@ -29,21 +29,26 @@ function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     ),
   };
   return (
-    <View className="absolute bottom-5 flex-row justify-between items-center bg-white mx-5 py-2 rounded-full shadow-lg">
+    <View
+      className="absolute bottom-5 flex-row justify-between items-center bg-white mx-5 py-2 rounded-full"
+      style={{
+        elevation: 2,
+      }}
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state.index === index;
 
         const onPress = () => {
           const event = navigation.emit({
-            type: "tabPress",
+            type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           });
@@ -55,7 +60,7 @@ function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
         const onLongPress = () => {
           navigation.emit({
-            type: "tabLongPress",
+            type: 'tabLongPress',
             target: route.key,
           });
         };
