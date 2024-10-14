@@ -234,7 +234,7 @@ const storePage = () => {
           />
         </Animated.View>
         <View style={{ paddingTop: paddingHorizontal }} />
-        <Animated.View className="items-center" style={[textStyle]}>
+        <Animated.View className="self-center" style={[textStyle]}>
           <MyText className="text-black font-extrabold text-[32px] capitalize">
             {store?.name}
           </MyText>

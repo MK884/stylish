@@ -1,6 +1,19 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { Product } from '../models';
+import { ParsedQs } from 'qs';
+
+// Function to safely convert query parameters to array
+const toArray = (
+  value: string | string[] | ParsedQs | ParsedQs[] | undefined
+): string[] => {
+  if (typeof value === 'string') {
+    return value.split(','); // Split if it's a comma-separated string
+  } else if (Array.isArray(value)) {
+    return value.filter((v) => typeof v === 'string') as string[]; // Ensure it's an array of strings
+  }
+  return [];
+};
 
 const getAllProducts = async (req: Request, res: Response) => {
   const { page, limit, search, color, size, category, brand } = req?.query;
@@ -8,6 +21,9 @@ const getAllProducts = async (req: Request, res: Response) => {
   let currentPage = Number(page) || 0;
   let docLimit = Number(limit) || 10;
   let searchDoc = search || '';
+
+  const colorArray = toArray(color);
+  const sizearray = toArray(size).map(Number);
 
   try {
     const products = await Product.aggregate([
@@ -29,12 +45,12 @@ const getAllProducts = async (req: Request, res: Response) => {
               'store.name': { $regex: searchDoc, $options: 'i' },
             },
           ],
-          ...(color ? { color: { $regex: color, $options: 'i' } } : {}),
+          ...(colorArray.length ? { color: { $in: colorArray } } : {}),
           ...(brand ? { 'store.name': { $regex: brand, $options: 'i' } } : {}),
-          ...(size
+          ...(sizearray.length
             ? {
                 size: {
-                  $in: [Number(size)],
+                  $in: sizearray,
                 },
               }
             : {}),

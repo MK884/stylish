@@ -165,14 +165,14 @@ const Featured = () => {
             gap: 20,
           }}
         >
-          <View className="flex-row justify-between items-center">
+          <Pressable className="flex-row justify-between items-center" onPress={()=>router.push('/(app)/(tabs)/market/market-place')}>
             <View>
               <MyText className="font-bold text-lg">Fresh collections</MyText>
             </View>
             <View>
               <Feather name="arrow-right" size={22} color="black" />
             </View>
-          </View>
+          </Pressable>
           <View>
             <FlatList
               data={freshCollection}
