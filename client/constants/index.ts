@@ -16,6 +16,20 @@ export const categories: category[] = [
   'top',
 ];
 
+export const colors: colors[] = [
+  'black',
+  'white',
+  'blue',
+  'brown',
+  'copper',
+  'gold',
+  'green',
+  'grey',
+  'navy',
+  'pink',
+  'orange',
+];
+
 interface collection {
   label: category;
   src: string;
@@ -119,5 +133,52 @@ export const ClothesSize: { size: size; label: string }[] = [
   {
     size: 34,
     label: 'xxl',
+  },
+];
+
+export const colorOptions: { color: string; code: string }[] = [
+  {
+    color: 'black',
+    code: '#0E0E10',
+  },
+  {
+    color: 'white',
+    code: 'white',
+  },
+  {
+    color: 'blue',
+    code: '#4B7EFF',
+  },
+  {
+    color: 'brown',
+    code: '#AE7250',
+  },
+  {
+    color: 'copper',
+    code: '#D69E83',
+  },
+  {
+    color: 'gold',
+    code: '#E1C96D',
+  },
+  {
+    color: 'green',
+    code: '#2EA690',
+  },
+  {
+    color: 'grey',
+    code: '#9F9F9F',
+  },
+  {
+    color: 'navy',
+    code: '#163564',
+  },
+  {
+    color: 'pink',
+    code: 'pink',
+  },
+  {
+    color: 'orange',
+    code: 'orange',
   },
 ];

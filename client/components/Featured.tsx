@@ -119,9 +119,10 @@ const Featured = () => {
             gap: 20,
           }}
         >
-          <View
+          <Pressable
             className="flex-row justify-between items-center"
             style={{ marginHorizontal: paddingHorizontal }}
+            onPress={() => router.push('/(app)/(screen)/market-place')}
           >
             <View>
               <MyText className="font-bold text-lg">Products on sale</MyText>
@@ -129,7 +130,7 @@ const Featured = () => {
             <View>
               <Feather name="arrow-right" size={22} color="black" />
             </View>
-          </View>
+          </Pressable>
           <View>
             <FlatList
               data={productOnSale}
@@ -165,7 +166,10 @@ const Featured = () => {
             gap: 20,
           }}
         >
-          <Pressable className="flex-row justify-between items-center" onPress={()=>router.push('/(app)/(tabs)/market/market-place')}>
+          <Pressable
+            className="flex-row justify-between items-center"
+            onPress={() => router.push('/(app)/(screen)/market-place')}
+          >
             <View>
               <MyText className="font-bold text-lg">Fresh collections</MyText>
             </View>

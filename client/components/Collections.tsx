@@ -1,16 +1,25 @@
 import { collection } from '@/constants';
 import { MyText } from '@/ui';
+import { router } from 'expo-router';
 import React from 'react';
 import { FlatList, ImageBackground, Pressable, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-const Box = ({ label, bg }: { label: string; bg: string }) => {
+const Box = ({
+  label,
+  bg,
+  onPress,
+}: {
+  label: string;
+  bg: string;
+  onPress: () => void;
+}) => {
   return (
     <Animated.View
       entering={FadeInDown.delay(300)}
       className="flex-1 h-28 m-1 w-52 rounded-2xl overflow-hidden relative"
     >
-      <Pressable style={{ flex: 1 }}>
+      <Pressable style={{ flex: 1 }} onPress={onPress}>
         <ImageBackground
           source={{ uri: bg }}
           style={{
@@ -42,7 +51,18 @@ const Collections = () => {
       <FlatList
         data={collection}
         numColumns={2}
-        renderItem={({ item }) => <Box label={item.label} bg={item.src} />}
+        renderItem={({ item }) => (
+          <Box
+            label={item.label}
+            bg={item.src}
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/(screen)/market-place',
+                params: { category: item.label },
+              })
+            }
+          />
+        )}
         keyExtractor={(item) => item.label}
         contentContainerStyle={{
           display: 'flex',

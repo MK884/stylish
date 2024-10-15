@@ -1,5 +1,6 @@
 import {
   Accordion,
+  CheckBoxLabel,
   ImageBox,
   ProductCard,
   Sheet,
@@ -9,7 +10,6 @@ import { ClothesSize, colorCode } from '@/constants';
 import { getAllProducts, getProductById, usePrivateAxios } from '@/services';
 import { Button, MyText } from '@/ui';
 import Feather from '@expo/vector-icons/Feather';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
@@ -37,47 +37,6 @@ const MAX_IMAGE_HEIGHT = 500;
 const MIN_IMAGE_HEIGHT = 120;
 const SCROLL_DISTANCE = MAX_IMAGE_HEIGHT - MIN_IMAGE_HEIGHT;
 // const SCROLL_DISTANCE = 100;
-
-const SizeLabel = ({
-  isDisable,
-  isSelected,
-  label,
-  onPress,
-  size,
-}: {
-  label: string;
-  size: number;
-  isSelected: boolean;
-  onPress: () => void;
-  isDisable: boolean;
-}) => {
-  return (
-    <Pressable
-      className={`items-center justify-between flex-row w-full px-6 my-1 h-12`}
-      onPress={onPress}
-      disabled={isDisable}
-    >
-      <View className="flex-1 flex-row gap-4">
-        <MyText
-          className={`font-bold text-[16px] ${isDisable ? 'text-[#dadada]' : ''}`}
-        >
-          {size}
-          {isDisable}
-        </MyText>
-        <MyText
-          className={`uppercase text-[16px] ${isDisable ? 'text-[#dadada]' : ''}`}
-        >
-          {label}
-        </MyText>
-      </View>
-      {isSelected && (
-        <View>
-          <MaterialIcons name="done" size={24} color="black" />
-        </View>
-      )}
-    </Pressable>
-  );
-};
 
 const ProductPage = () => {
   const { productId } = useLocalSearchParams();
@@ -367,7 +326,7 @@ const ProductPage = () => {
           <MyText className="text-black text-[18px] font-bold">Size</MyText>
           <View>
             {ClothesSize.map((item) => (
-              <SizeLabel
+              <CheckBoxLabel
                 isDisable={!product?.size.includes(item.size) || false}
                 onPress={() => {
                   setSelectedSize(item.size);

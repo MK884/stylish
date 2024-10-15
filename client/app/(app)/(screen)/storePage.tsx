@@ -77,7 +77,7 @@ const storePage = () => {
       label: 'overview',
       content:
         products && store ? (
-          <StoreOverview store={store} products={products} />
+          <StoreOverview store={store} products={products} key={1} />
         ) : (
           <MyText>Loading...</MyText>
         ),

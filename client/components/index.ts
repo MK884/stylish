@@ -20,6 +20,7 @@ import StoreLogo from './StoreLogo';
 import Stores from './Stores';
 import AboutStore from './AboutStore';
 import StoreOverview from './StoreOverview';
+import CheckBoxLabel from './CheckBoxLabel';
 export {
   OnBoardingItem,
   OnBoardingScreen,
@@ -43,4 +44,5 @@ export {
   Sheet,
   AboutStore,
   StoreOverview,
+  CheckBoxLabel,
 };
