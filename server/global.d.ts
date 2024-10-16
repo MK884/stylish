@@ -62,6 +62,8 @@ interface IProductImage {
   src: string;
 }
 
+type addressType = 'home' | 'work';
+
 // Men's Clothing
 // T-shirts
 // Shirts
