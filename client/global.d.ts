@@ -118,3 +118,28 @@ interface StoreOverview {
   store: IStore;
   products: Array<IProduct>;
 }
+
+type addressType = 'home' | 'work';
+
+interface IAddress {
+  _id: string;
+  userId: string;
+  fullName: string;
+  phone: number;
+  country: string;
+  state: string;
+  city: string;
+  pincode: string;
+  address: string;
+  type?: addressType;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface IDropDown {
+  data: Array<string>;
+  onOptionSelecte: (option: string) => void;
+  error?: string;
+  label?: string;
+  tailwindCss?: string;
+}
