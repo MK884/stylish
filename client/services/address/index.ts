@@ -117,4 +117,29 @@ const deleteAddress = async ({
   }
 };
 
-export { addAddress, getAddress, updateAddress, deleteAddress };
+const getAddressById = async ({
+  addressId,
+  axios,
+}: {
+  addressId: string;
+  axios: AxiosInstance;
+}) => {
+  try {
+    const response = await axios.get(`/address/${addressId}`);
+
+    return response?.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      // server error
+      const serverError = error?.response?.data;
+
+      console.log(`server error in getAddressById: ${serverError?.message}`);
+
+      throw new Error(serverError?.message || 'server error in getAddressById');
+    }
+    console.error('getAddressById error', error);
+    throw new Error('getAddressById error due to some reasone');
+  }
+};
+
+export { addAddress, getAddress, updateAddress, deleteAddress, getAddressById };

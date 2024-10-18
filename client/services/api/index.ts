@@ -85,5 +85,12 @@ function usePrivateAxios() {
   return privateAxios;
 }
 
+const countryAxios = axios.create({
+  baseURL: process.env.EXPO_PUBLIC_COUNTRY_API_URL,
+  headers: {
+    'X-CSCAPI-KEY': process.env.EXPO_PUBLIC_COUNTRY_API_KEY,
+  },
+});
+
 export default publicAxios;
-export { privateAxios, usePrivateAxios };
+export { privateAxios, usePrivateAxios, countryAxios };

@@ -38,6 +38,13 @@ const ScreenLayout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="form"
+        options={{
+          headerShown: false,
+          presentation: 'fullScreenModal',
+        }}
+      />
     </Stack>
   );
 };

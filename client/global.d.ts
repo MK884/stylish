@@ -125,7 +125,7 @@ interface IAddress {
   _id: string;
   userId: string;
   fullName: string;
-  phone: number;
+  phone: string;
   country: string;
   state: string;
   city: string;
@@ -142,4 +142,54 @@ interface IDropDown {
   error?: string;
   label?: string;
   tailwindCss?: string;
+}
+
+// {
+//   "id": 1,
+//   "name": "Afghanistan",
+//   "iso2": "AF",
+//   "iso3": "AFG",
+//   "phonecode": "93",
+//   "capital": "Kabul",
+//   "currency": "AFN",
+//   "native": "افغانستان",
+//   "emoji": "🇦🇫"
+// },
+
+interface ICountry {
+  id: number;
+  name: string;
+  iso2: string;
+  iso3: string;
+  phonecode: string;
+  capital: string;
+  currency: string;
+  native: string;
+  emoji: string;
+}
+
+// {
+//   "id": 4006,
+//   "name": "Meghalaya",
+//   "iso2": "ML"
+// },
+
+interface IState {
+  id: number;
+  name: string;
+  iso2: string;
+}
+
+// {
+//   "id": 57589,
+//   "name": "Achalpur",
+//   "latitude": "21.25665000",
+//   "longitude": "77.51006000"
+// },
+
+interface ICity {
+  id: number;
+  name: string;
+  latitude: string;
+  longitude: string;
 }

@@ -21,6 +21,8 @@ import Stores from './Stores';
 import AboutStore from './AboutStore';
 import StoreOverview from './StoreOverview';
 import CheckBoxLabel from './CheckBoxLabel';
+import AddressCard from './AddressCard';
+import DeleteModal from './DeleteModal';
 export {
   OnBoardingItem,
   OnBoardingScreen,
@@ -45,4 +47,6 @@ export {
   AboutStore,
   StoreOverview,
   CheckBoxLabel,
+  AddressCard,
+  DeleteModal,
 };

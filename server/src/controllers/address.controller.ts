@@ -252,4 +252,58 @@ const deleteAddress = async (req: Request, res: Response) => {
   }
 };
 
-export { getAddress, addAddress, updateAddress, deleteAddress };
+const getAddressById = async (req: Request, res: Response) => {
+  const userId = req?.user?._id;
+  const { addressId } = req?.params;
+
+  if (!addressId) {
+    res.status(406).json({
+      statusCode: 406,
+      success: false,
+      message: 'invalid addressId',
+    });
+    return;
+  }
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'User not found',
+      });
+      return;
+    }
+
+    const response = await Address.findById(addressId);
+
+    if (!response) {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'address not found',
+      });
+      return;
+    }
+
+    res.status(202).json({
+      statusCode: 202,
+      success: true,
+      message: 'address fetch',
+      data: response,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
+    }
+  }
+};
+
+export { getAddress, addAddress, updateAddress, deleteAddress, getAddressById };
