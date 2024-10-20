@@ -6,7 +6,7 @@ const getAllCartOfUser = async (req: Request, res: Response) => {
   const userId = req?.user?._id;
 
   try {
-    const products = await Cart.aggregate([
+    const cart = await Cart.aggregate([
       {
         $match: { userId: new mongoose.Types.ObjectId(userId) },
       },
@@ -14,17 +14,17 @@ const getAllCartOfUser = async (req: Request, res: Response) => {
         $lookup: {
           from: 'products',
           foreignField: '_id',
-          localField: 'products.productId',
+          localField: 'productId',
           as: 'product',
         },
       },
     ]);
 
-    if (!products) {
-      res.status(404).json({
-        statusCode: 404,
-        success: false,
-        message: 'product not found',
+    if (!cart.length) {
+      res.status(200).json({
+        statusCode: 200,
+        success: true,
+        message: 'cart is empty',
       });
       return;
     }
@@ -33,7 +33,7 @@ const getAllCartOfUser = async (req: Request, res: Response) => {
       statusCode: 200,
       success: true,
       message: 'success',
-      data: products,
+      data: cart,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -48,13 +48,14 @@ const getAllCartOfUser = async (req: Request, res: Response) => {
 };
 
 const addToCart = async (req: Request, res: Response) => {
-  const { productId, qty } = req?.params;
+  const { productId, qty, color, s } = req?.body;
 
   const userId = req?.user?._id;
 
-  const quantity = Number(qty || 0) || 1;
+  const quantity = Number.parseInt(qty || 0) || 1;
+  const size = Number.parseInt(s);
 
-  if (!productId) {
+  if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
     res.status(406).json({
       statusCode: 406,
       success: false,
@@ -64,8 +65,8 @@ const addToCart = async (req: Request, res: Response) => {
   }
 
   try {
-    const isProductExists = await Product.findById(productId);
     
+    const isProductExists = await Product.findById(productId);
 
     if (!isProductExists) {
       res.status(404).json({
@@ -76,24 +77,32 @@ const addToCart = async (req: Request, res: Response) => {
       return;
     }
 
-    const cart = await Cart.findOne({ userId });
 
-    if (!cart) {
+    const cart = await Cart.find({
+      userId,
+    });
+
+    if (!cart.length) {
       // no existing product in cart add new one
 
-      const newCart = await Cart.create(
-        {
-          userId,
-          products: [
-            {
-              productId: new mongoose.Types.ObjectId(productId),
-              quantity: quantity,
-            },
-          ],
-        },
-        { new: true }
-      );
+      if (!size || !color) {
+        res.status(400).json({
+          statusCode: 400,
+          success: false,
+          message: 'size and color not found',
+        });
+        return;
+      }
 
+
+      const newCart = await Cart.create({
+        color,
+        productId,
+        quantity,
+        size,
+        userId
+      })
+      
       res.status(200).json({
         statusCode: 200,
         success: true,
@@ -101,29 +110,64 @@ const addToCart = async (req: Request, res: Response) => {
         data: newCart,
       });
       return;
+
     }
 
     // check if product already exists
-    const existingProductIndex = cart.products.findIndex(
-      (product) => product.productId.toString() === productId
+    const existingProductIndex = cart.findIndex(
+      (item) => item.productId.toString() === productId
     );
 
+
     if (existingProductIndex >= 0) {
-      cart.products[existingProductIndex].quantity += quantity;
-    } else {
-      cart.products.push({
-        productId: new mongoose.Types.ObjectId(productId),
-        quantity: quantity,
+      const quant = cart[existingProductIndex].quantity + quantity;
+      const response = await Cart.findByIdAndUpdate(
+        cart[existingProductIndex]._id,
+        {
+          $set: { quantity: quant },
+        },
+        {
+          new: true,
+        }
+      );
+
+
+      res.status(202).json({
+        statusCode: 202,
+        success: true,
+        message: 'quantity updated successfully',
+        data: response,
       });
+      return;
     }
 
-    await cart.save();
+
+    if (!size || !color) {
+      res.status(400).json({
+        statusCode: 400,
+        success: false,
+        message: 'size and color not found',
+      });
+      return;
+    }
+
+
+    const newCart = await Cart.create(
+      {
+        userId,
+        productId,
+        quantity,
+        size,
+        color,
+      }
+     
+    );
 
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'updated cart details',
-      data: cart,
+      data: newCart,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -152,9 +196,9 @@ const removeFromCart = async (req: Request, res: Response) => {
   }
 
   try {
-    const cart = await Cart.findOne({ userId });
+    const carts = await Cart.find({ userId });
 
-    if (!cart?.products.length) {
+    if (!carts?.length) {
       res.status(406).json({
         statusCode: 406,
         success: false,
@@ -163,7 +207,7 @@ const removeFromCart = async (req: Request, res: Response) => {
       return;
     }
 
-    const isProductExists = cart.products.some(
+    const isProductExists = carts.some(
       (product) => product.productId.toString() === productId
     );
 
@@ -176,11 +220,24 @@ const removeFromCart = async (req: Request, res: Response) => {
       return;
     }
 
-    cart.products = cart?.products.filter(
-      (product) => product.productId.toString() !== productId
-    );
+    const response = await Cart.deleteOne({
+      productId,
+    });
 
-    await cart.save();
+    const cart = await Cart.aggregate([
+      {
+        $match: { userId: new mongoose.Types.ObjectId(userId) },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          foreignField: '_id',
+          localField: 'productId',
+          as: 'product',
+        },
+      },
+    ]);
+
 
     res.status(200).json({
       statusCode: 200,
@@ -206,7 +263,7 @@ const clearCart = async (req: Request, res: Response) => {
   try {
     const cart = await Cart.findOne({ userId });
 
-    if (!cart || !cart.products.length) {
+    if (!cart) {
       res.status(404).json({
         statusCode: 404,
         success: false,
@@ -215,15 +272,13 @@ const clearCart = async (req: Request, res: Response) => {
       return;
     }
 
-    cart.products = [];
 
-    await cart.save();
+    await Cart.deleteMany({ userId });
 
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'Cart cleared successfully',
-      data: cart,
     });
   } catch (error) {
     if (error instanceof Error) {

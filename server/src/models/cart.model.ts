@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 
 export interface ICart {
   userId: mongoose.Types.ObjectId;
-  products: Array<{ productId: mongoose.Types.ObjectId; quantity: number }>;
+  productId: mongoose.Types.ObjectId;
+  quantity: number;
+  size: number;
+  color: colors;
 }
 
 const CartSchema = new mongoose.Schema<ICart>(
@@ -10,22 +13,37 @@ const CartSchema = new mongoose.Schema<ICart>(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      unique: true,
       ref: 'users',
     },
-    products: [
-      {
-        productId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'products',
-          unique: true,
-        },
-        quantity: {
-          type: Number,
-          default: 1,
-        },
-      },
-    ],
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'products',
+      required: true,
+      unique: true,
+    },
+    quantity: {
+      type: Number,
+      default: 1,
+    },
+    size: {
+      type: Number,
+    },
+    color: {
+      type: String,
+      enum: [
+        'black',
+        'white',
+        'blue',
+        'brown',
+        'copper',
+        'gold',
+        'green',
+        'grey',
+        'navy',
+        'pink',
+        'orange',
+      ],
+    },
   },
   { timestamps: true }
 );
