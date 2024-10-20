@@ -24,15 +24,27 @@ const updateCart = async ({
   axios,
   productId,
   qty = 1,
+  color,
+  size,
 }: {
   axios: AxiosInstance;
   productId: string;
   qty?: number;
+  color?: colors;
+  size?: size;
 }) => {
   if (!axios || !productId) return;
 
+  const data: { [kye: string]: any } = {
+    productId,
+    qty,
+  };
+
+  if (color) data.color = color;
+  if (size) data.size = size;
+
   try {
-    const response = await axios.get(`/cart/add/${productId}/${qty}`);
+    const response = await axios.get(`/cart/add`, data);
     return response?.data?.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {

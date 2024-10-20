@@ -45,6 +45,12 @@ const ScreenLayout = () => {
           presentation: 'fullScreenModal',
         }}
       />
+      <Stack.Screen
+        name="cart"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

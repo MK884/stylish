@@ -3,7 +3,12 @@ import React from 'react';
 import { MyText } from '@/ui';
 import { Link } from 'expo-router';
 
-const ProductCard = ({ item, width = 200, height = 250 }: ProductCard) => {
+const ProductCard = ({
+  item,
+  width = 200,
+  height = 250,
+  tailwindClass,
+}: ProductCard) => {
   const getSalePrice = (disscount: number, price: number) => {
     const finalPrice = (disscount / 100) * price;
     return price - finalPrice;
@@ -16,7 +21,9 @@ const ProductCard = ({ item, width = 200, height = 250 }: ProductCard) => {
         params: { productId: item?._id },
       }}
     >
-      <View className="flex space-y-3 p-1 bg-white rounded-lg shadow">
+      <View
+        className={`flex space-y-3 p-1 bg-white rounded-lg ${tailwindClass}`}
+      >
         <View
           className="rounded-xl overflow-hidden relative"
           style={{ height, width }}

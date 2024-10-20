@@ -102,6 +102,7 @@ interface ProductCard {
   item: IProduct;
   height?: number;
   width?: number;
+  tailwindClass?: string;
 }
 
 interface tab {
