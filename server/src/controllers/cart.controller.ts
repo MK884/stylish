@@ -65,7 +65,6 @@ const addToCart = async (req: Request, res: Response) => {
   }
 
   try {
-    
     const isProductExists = await Product.findById(productId);
 
     if (!isProductExists) {
@@ -76,7 +75,6 @@ const addToCart = async (req: Request, res: Response) => {
       });
       return;
     }
-
 
     const cart = await Cart.find({
       userId,
@@ -94,15 +92,14 @@ const addToCart = async (req: Request, res: Response) => {
         return;
       }
 
-
       const newCart = await Cart.create({
         color,
         productId,
         quantity,
         size,
-        userId
-      })
-      
+        userId,
+      });
+
       res.status(200).json({
         statusCode: 200,
         success: true,
@@ -110,14 +107,12 @@ const addToCart = async (req: Request, res: Response) => {
         data: newCart,
       });
       return;
-
     }
 
     // check if product already exists
     const existingProductIndex = cart.findIndex(
       (item) => item.productId.toString() === productId
     );
-
 
     if (existingProductIndex >= 0) {
       const quant = cart[existingProductIndex].quantity + quantity;
@@ -131,7 +126,6 @@ const addToCart = async (req: Request, res: Response) => {
         }
       );
 
-
       res.status(202).json({
         statusCode: 202,
         success: true,
@@ -140,7 +134,6 @@ const addToCart = async (req: Request, res: Response) => {
       });
       return;
     }
-
 
     if (!size || !color) {
       res.status(400).json({
@@ -151,17 +144,13 @@ const addToCart = async (req: Request, res: Response) => {
       return;
     }
 
-
-    const newCart = await Cart.create(
-      {
-        userId,
-        productId,
-        quantity,
-        size,
-        color,
-      }
-     
-    );
+    const newCart = await Cart.create({
+      userId,
+      productId,
+      quantity,
+      size,
+      color,
+    });
 
     res.status(200).json({
       statusCode: 200,
@@ -238,7 +227,6 @@ const removeFromCart = async (req: Request, res: Response) => {
       },
     ]);
 
-
     res.status(200).json({
       statusCode: 200,
       success: true,
@@ -271,7 +259,6 @@ const clearCart = async (req: Request, res: Response) => {
       });
       return;
     }
-
 
     await Cart.deleteMany({ userId });
 

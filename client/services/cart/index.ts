@@ -41,10 +41,10 @@ const updateCart = async ({
   };
 
   if (color) data.color = color;
-  if (size) data.size = size;
+  if (size) data.s = size;
 
   try {
-    const response = await axios.get(`/cart/add`, data);
+    const response = await axios.post(`/cart/add`, data);
     return response?.data?.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
@@ -70,7 +70,7 @@ const removeFromCart = async ({
   if (!axios || !productId) return;
 
   try {
-    const response = await axios.delete(`/cart/${productId}`);
+    const response = await axios.delete(`/cart/remove/${productId}`);
 
     return response?.data?.data;
   } catch (error) {

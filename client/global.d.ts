@@ -194,3 +194,23 @@ interface ICity {
   latitude: string;
   longitude: string;
 }
+
+interface ICartProduct {
+  _id: string;
+  userId: string;
+  productId: string;
+  quantity: number;
+  size: number;
+  color: string;
+  product: Array<IProduct>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ICartProductCard {
+  item: ICartProduct;
+  onView: () => void;
+  onSelect: () => void;
+  onDelete: () => void;
+  onQuantityUpdate: (quantity: number, id: string) => void;
+}

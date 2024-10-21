@@ -7,7 +7,14 @@ import {
   StoreLogo,
 } from '@/components';
 import { ClothesSize, colorCode } from '@/constants';
-import { getAllProducts, getProductById, usePrivateAxios } from '@/services';
+import {
+  getAllProducts,
+  getCart,
+  getProductById,
+  removeFromCart,
+  updateCart,
+  usePrivateAxios,
+} from '@/services';
 import { Button, MyText } from '@/ui';
 import Feather from '@expo/vector-icons/Feather';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -18,10 +25,13 @@ import {
   FlatList,
   Pressable,
   ToastAndroid,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import Animated, {
   Extrapolation,
+  FadeInDown,
+  FadeInUp,
   interpolate,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -45,6 +55,8 @@ const ProductPage = () => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [showCartMessage, setShowCartMessage] = React.useState<boolean>(false);
+  const [isProductInCart, setisProductInCart] = React.useState<boolean>(false);
   const [selectedSize, setSelectedSize] = React.useState<size | 'size'>('size');
   const [product, setProduct] = React.useState<IProduct | null>(null);
   const [otherProducts, setOtherProducts] = React.useState<IProduct[] | []>([]);
@@ -93,7 +105,75 @@ const ProductPage = () => {
   React.useEffect(() => {
     getProduct();
     getOtherProducts();
+    checkCart();
   }, []);
+
+  const addToCart = async () => {
+    if (selectedSize === 'size') {
+      snapToIndex(0);
+      return;
+    }
+
+    try {
+      const response = await updateCart({
+        axios,
+        productId: productId.toString(),
+        size: selectedSize,
+        color: product?.color[0],
+      });
+
+      setShowCartMessage(true);
+
+      setisProductInCart(true);
+
+      setTimeout(() => setShowCartMessage(false), 2000);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    }
+  };
+
+  const removeFormCart = async () => {
+    if (!productId) return;
+
+    try {
+      const response = await removeFromCart({
+        axios,
+        productId: productId.toString(),
+      });
+
+      setisProductInCart(false);
+
+      ToastAndroid.show('remove from cart', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    }
+  };
+
+  const checkCart = async () => {
+    try {
+      const response = (await getCart(axios)) as Array<ICartProduct>;
+      if (response?.length) {
+        let isProductInCart = response.some(
+          (item) => item.productId === productId
+        );
+
+        if (isProductInCart) {
+          setisProductInCart(true);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    }
+  };
 
   const getSalePrice = (disscount: number, price: number) => {
     const finalPrice = (disscount / 100) * price;
@@ -314,10 +394,47 @@ const ProductPage = () => {
             </Animated.ScrollView>
           </View>
         )}
-        <Button
-          title="Add to Cart"
-          tailwindClass="rounded-none w-full absolute bottom-0"
-        />
+        <View className="absolute bottom-0 bg-white" style={{ width: '100%' }}>
+          {showCartMessage && (
+            <Animated.View
+              entering={FadeInDown.duration(400)}
+              exiting={FadeInUp.duration(400)}
+            >
+              <TouchableOpacity
+                className="flex-row items-center justify-between bg-[#614FE0] py-4"
+                style={{ paddingHorizontal }}
+                onPress={() => router.push('/(app)/(screen)/cart')}
+              >
+                <View>
+                  <MyText className="text-white">Added to the cart</MyText>
+                </View>
+                <View>
+                  <Feather name="arrow-right" size={24} color="white" />
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+
+          <View
+            className=" items-center py-4 z-10 bg-white"
+            style={{ paddingHorizontal }}
+          >
+            {isProductInCart ? (
+              <Button
+                title="Remove from cart"
+                tailwindClass="rounded-xl bg-white border border-[#dadada] w-full"
+                textStyle={{ color: 'black' }}
+                onPress={removeFormCart}
+              />
+            ) : (
+              <Button
+                title="Add to Cart"
+                tailwindClass="rounded-xl w-full"
+                onPress={addToCart}
+              />
+            )}
+          </View>
+        </View>
       </View>
 
       {/* bottom sheet */}
