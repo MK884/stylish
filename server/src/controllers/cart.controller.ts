@@ -52,7 +52,8 @@ const addToCart = async (req: Request, res: Response) => {
 
   const userId = req?.user?._id;
 
-  const quantity = Number.parseInt(qty || 0) || 1;
+  let quantity = Number.parseInt(qty || 1) || 1;
+  quantity = qty < 1 ? 1 : quantity;
   const size = Number.parseInt(s);
 
   if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
@@ -115,22 +116,36 @@ const addToCart = async (req: Request, res: Response) => {
     );
 
     if (existingProductIndex >= 0) {
-      const quant = cart[existingProductIndex].quantity + quantity;
+      // const quant = cart[existingProductIndex].quantity + quantity;
       const response = await Cart.findByIdAndUpdate(
         cart[existingProductIndex]._id,
         {
-          $set: { quantity: quant },
+          $set: { quantity: quantity },
         },
         {
           new: true,
         }
       );
 
+      const updatedCart = await Cart.aggregate([
+        {
+          $match: { userId: new mongoose.Types.ObjectId(userId) },
+        },
+        {
+          $lookup: {
+            from: 'products',
+            foreignField: '_id',
+            localField: 'productId',
+            as: 'product',
+          },
+        },
+      ]);
+
       res.status(202).json({
         statusCode: 202,
         success: true,
         message: 'quantity updated successfully',
-        data: response,
+        data: updatedCart,
       });
       return;
     }

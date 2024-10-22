@@ -210,7 +210,8 @@ interface ICartProduct {
 interface ICartProductCard {
   item: ICartProduct;
   onView: () => void;
-  onSelect: () => void;
+  onSelect: (price: number, isUpdate?: boolean) => void;
   onDelete: () => void;
   onQuantityUpdate: (quantity: number, id: string) => void;
+  isSeleceted: boolean;
 }

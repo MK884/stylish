@@ -1,35 +1,31 @@
+import { CartProductCard } from '@/components';
 import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  Image,
-  ToastAndroid,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+  getCart,
+  removeFromCart,
+  updateCart,
+  usePrivateAxios,
+} from '@/services';
+import { Button, MyText } from '@/ui';
+import Feather from '@expo/vector-icons/Feather';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useRouter } from 'expo-router';
 import React from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import Animated, {
   Extrapolation,
   FadeInDown,
-  FadeInUp,
   interpolate,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import { useRouter } from 'expo-router';
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, MyText } from '@/ui';
-import { CartProductCard } from '@/components';
-import {
-  usePrivateAxios,
-  getCart,
-  removeFromCart,
-  updateCart,
-} from '@/services';
 
 const cart = () => {
   const LOGO_SIZE = 80;
@@ -42,7 +38,11 @@ const cart = () => {
   const axios = usePrivateAxios();
 
   const [cartItem, setCartItem] = React.useState<Array<ICartProduct>>([]);
+  const [checkOutItem, setCheckOutItem] = React.useState<Array<ICartProduct>>(
+    []
+  );
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [totalPrice, setTotalPrice] = React.useState<number>(0);
 
   const getCartProducts = async () => {
     setIsLoading(true);
@@ -72,6 +72,11 @@ const cart = () => {
     try {
       const response = await removeFromCart({ axios, productId });
 
+      const otherProducts = checkOutItem.filter(
+        (product) => product.productId !== productId
+      );
+
+      setCheckOutItem(otherProducts);
       setCartItem(response);
     } catch (error) {
       console.log(error);
@@ -85,8 +90,13 @@ const cart = () => {
     if (quantity < 1 || !productId) return;
 
     try {
-      // const response = await updateCart({ axios, productId, qty: quantity });
-      // console.log('resp ', response);
+      const response = (await updateCart({
+        axios,
+        productId,
+        qty: quantity,
+      })) as ICartProduct[];
+      // onSelectItem(response);
+      setCartItem(response);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -95,11 +105,70 @@ const cart = () => {
     }
   };
 
-  const onSelect = () => {};
+  const onSelectItem = (
+    item: ICartProduct,
+    price: number,
+    isUpdate: boolean = false
+  ) => {
+    const isExisting = checkOutItem.some((product) => product._id === item._id);
+
+    if (isExisting) {
+      const otherProducts = checkOutItem.filter(
+        (product) => product._id !== item._id
+      );
+
+      if (isUpdate) {
+        setCheckOutItem([
+          ...otherProducts,
+          {
+            ...item,
+            product: [
+              {
+                ...item.product[0],
+                price,
+              },
+            ],
+          },
+        ]);
+      } else {
+        setCheckOutItem(otherProducts);
+      }
+    } else {
+      setCheckOutItem((prev) => [
+        ...prev,
+        {
+          ...item,
+          product: [
+            {
+              ...item.product[0],
+              price,
+            },
+          ],
+        },
+      ]);
+    }
+  };
+
+  const calculateTotalPrice = () => {
+    if (!checkOutItem.length) {
+      setTotalPrice(0);
+      return;
+    }
+    const price = checkOutItem.reduce((sum, item) => {
+      const productPrice = item?.product?.[0]?.price || 0;
+      return sum + productPrice;
+    }, 0);
+
+    setTotalPrice(price);
+  };
 
   React.useEffect(() => {
     getCartProducts();
   }, []);
+
+  React.useEffect(() => {
+    calculateTotalPrice();
+  }, [checkOutItem]);
 
   const scrollY = useSharedValue(0);
 
@@ -221,9 +290,14 @@ const cart = () => {
                   key={item.productId}
                   item={item}
                   onView={() => onView(item.productId)}
-                  onSelect={() => {}}
+                  onSelect={(price, isUpdate) =>
+                    onSelectItem(item, price, isUpdate)
+                  }
                   onDelete={() => onCartRemove(item.productId)}
                   onQuantityUpdate={updateQuantity}
+                  isSeleceted={checkOutItem.some(
+                    (product) => product._id === item._id
+                  )}
                 />
               </View>
             ))}
@@ -268,18 +342,32 @@ const cart = () => {
           padding: paddingHorizontal,
         }}
       >
-        <View className="space-y-8">
-          <View className="flex-row items-center justify-between">
+        <View className="">
+          <View className="flex-row items-center justify-between mb-7">
             <View>
               <MyText className="text-lg">Subtotal (VAT included) </MyText>
             </View>
             <View>
-              <MyText className="text-black font-[700] text-[18px]">$34</MyText>
+              <MyText className="text-black font-[700] text-[18px]">
+                ${totalPrice}
+              </MyText>
             </View>
           </View>
 
+          {totalPrice === 0 && (
+            <View>
+              <MyText className="text-sm text-[#614FE0] self-center">
+                selecte an product fro checkout
+              </MyText>
+            </View>
+          )}
+
           <View className="">
-            <Button title="Continue to checkout" tailwindClass="rounded-2xl" />
+            <Button
+              title="Continue to checkout"
+              tailwindClass="rounded-2xl"
+              disabled={totalPrice === 0}
+            />
           </View>
         </View>
       </Animated.View>

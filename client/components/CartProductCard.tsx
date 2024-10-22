@@ -20,19 +20,20 @@ const CartProductCard = ({
   onSelect,
   onDelete,
   onQuantityUpdate,
+  isSeleceted,
 }: ICartProductCard) => {
   const [quantity, setQuantity] = React.useState(item.quantity || 1);
-  const [isSeleceted, setIsSeleceted] = React.useState<boolean>(false);
-
-  // const updateQuantity = (quantity:number) => setQuantity(prev)
+  const [price, setPrice] = React.useState(item.product[0].price);
 
   let color = isSeleceted ? '#614FE0' : '';
   let backgroundColor = isSeleceted ? '#EFEDFC' : '#ffffff';
 
   React.useEffect(() => {
+    setPrice(quantity * item.product[0].price);
+    onSelect(quantity * item.product[0].price, true);
     const timerId = setTimeout(
       () => onQuantityUpdate(quantity, item.productId),
-      2000
+      1500
     );
 
     return () => clearTimeout(timerId);
@@ -43,7 +44,7 @@ const CartProductCard = ({
       <TouchableOpacity
         className="rounded-xl p-4"
         style={{ elevation: 3, backgroundColor }}
-        onPress={() => setIsSeleceted((prev) => !prev)}
+        onPress={() => onSelect(quantity * item.product[0].price)}
       >
         {/* header */}
         <View className="flex-row items-center justify-between">
@@ -116,7 +117,7 @@ const CartProductCard = ({
           </View>
           <View>
             <MyText className="text-black font-[700] text-[14px]">
-              ${item?.product?.[0].price}
+              ${price}
             </MyText>
           </View>
         </View>
