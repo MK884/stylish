@@ -43,7 +43,7 @@ const CartProductCard = ({
     <View>
       <TouchableOpacity
         className="rounded-xl p-4"
-        style={{ elevation: 3, backgroundColor }}
+        style={{ elevation: 1, backgroundColor }}
         onPress={() => onSelect(quantity * item.product[0].price)}
       >
         {/* header */}

@@ -24,6 +24,7 @@ import CheckBoxLabel from './CheckBoxLabel';
 import AddressCard from './AddressCard';
 import DeleteModal from './DeleteModal';
 import CartProductCard from './CartProductCard';
+import OrderCard from './OrderCard';
 export {
   OnBoardingItem,
   OnBoardingScreen,
@@ -51,4 +52,5 @@ export {
   AddressCard,
   DeleteModal,
   CartProductCard,
+  OrderCard,
 };

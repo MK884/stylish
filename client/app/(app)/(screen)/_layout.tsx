@@ -51,6 +51,19 @@ const ScreenLayout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="order"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="order-tracking"
+        options={{
+          title: 'Order tracking',
+          headerShadowVisible: false,
+        }}
+      />
     </Stack>
   );
 };

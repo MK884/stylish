@@ -10,7 +10,7 @@ import {
   Pressable,
   ScrollView,
   ToastAndroid,
-  View
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -126,7 +126,7 @@ const profile = () => {
             <Pressable
               className="flex-row justify-between"
               style={{ paddingHorizontal }}
-              onPress={()=>router.push('/(app)/(screen)/cart')}
+              onPress={() => router.push('/(app)/(screen)/cart')}
             >
               <MyText className="font-semibold text-lg">My Cart</MyText>
 
@@ -140,6 +140,7 @@ const profile = () => {
             <Pressable
               className="flex-row justify-between"
               style={{ paddingHorizontal }}
+              onPress={() => router.push('/(app)/(screen)/order')}
             >
               <MyText className="font-semibold text-lg">
                 My Orders and messages
