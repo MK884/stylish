@@ -105,4 +105,31 @@ const clearCart = async (axios: AxiosInstance) => {
   }
 };
 
-export { getCart, updateCart, removeFromCart, clearCart };
+const getCartById = async ({
+  axios,
+  cartId,
+}: {
+  axios: AxiosInstance;
+  cartId: string;
+}) => {
+  if (!axios || !cartId) return;
+
+  try {
+    const response = await axios.get(`/cart/id?${cartId}`);
+
+    return response?.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      // server error
+      const serverError = error?.response?.data;
+
+      console.log(`server error in getCartById: ${serverError?.message}`);
+
+      throw new Error(serverError?.message || 'server error in getCartById');
+    }
+    console.error('getCartById error', error);
+    throw new Error('getCartById error due to some reasone');
+  }
+};
+
+export { getCart, updateCart, removeFromCart, clearCart, getCartById };

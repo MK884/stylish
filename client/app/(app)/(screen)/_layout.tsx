@@ -64,6 +64,12 @@ const ScreenLayout = () => {
           headerShadowVisible: false,
         }}
       />
+      <Stack.Screen
+        name="checkout"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

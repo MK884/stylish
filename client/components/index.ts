@@ -25,6 +25,9 @@ import AddressCard from './AddressCard';
 import DeleteModal from './DeleteModal';
 import CartProductCard from './CartProductCard';
 import OrderCard from './OrderCard';
+import Address from './Address';
+import Payment from './Payment';
+import OrderSummary from './OrderSummary';
 export {
   OnBoardingItem,
   OnBoardingScreen,
@@ -53,4 +56,7 @@ export {
   DeleteModal,
   CartProductCard,
   OrderCard,
+  Address,
+  Payment,
+  OrderSummary,
 };

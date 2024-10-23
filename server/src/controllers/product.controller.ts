@@ -201,4 +201,4 @@ const getProductsByStoreId = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllProducts, getProductById, getProductsByStoreId };
+export { getAllProducts, getProductById, getProductsByStoreId, toArray };

@@ -367,6 +367,7 @@ const cart = () => {
               title="Continue to checkout"
               tailwindClass="rounded-2xl"
               disabled={totalPrice === 0}
+              onPress={() => router.push('/(app)/(screen)/checkout')}
             />
           </View>
         </View>

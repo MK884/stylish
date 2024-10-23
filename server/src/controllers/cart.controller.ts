@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Cart, Product } from '../models';
 import mongoose from 'mongoose';
+import { toArray } from './product.controller';
 
 const getAllCartOfUser = async (req: Request, res: Response) => {
   const userId = req?.user?._id;
@@ -294,4 +295,73 @@ const clearCart = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllCartOfUser, addToCart, removeFromCart, clearCart };
+const getCartById = async (req: Request, res: Response) => {
+  const { cartId } = req?.query;
+
+  if (!cartId) {
+    res.status(406).json({
+      statusCode: 406,
+      success: false,
+      message: 'enter valid cartId',
+    });
+    return;
+  }
+
+  const cartIdArray = toArray(cartId).map(
+    (id) => new mongoose.Types.ObjectId(id)
+  );
+
+  if (!cartIdArray.length) {
+    res.status(406).json({
+      statusCode: 406,
+      success: false,
+      message: 'enter valid cartId',
+    });
+    return;
+  }
+
+  try {
+    const cart = await Cart.aggregate([
+      {
+        $match: {
+          _id: { $in: cartIdArray },
+        },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          foreignField: '_id',
+          localField: 'productId',
+          as: 'product',
+        },
+      },
+    ]);
+
+    if (!cart.length) {
+      res.status(202).json({
+        statusCode: 202,
+        success: true,
+        message: 'no id match',
+      });
+      return;
+    }
+
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'success',
+      data: cart,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error,
+      });
+    }
+  }
+};
+
+export { getAllCartOfUser, addToCart, removeFromCart, clearCart, getCartById };
