@@ -115,7 +115,7 @@ const getCartById = async ({
   if (!axios || !cartId) return;
 
   try {
-    const response = await axios.get(`/cart/id?${cartId}`);
+    const response = await axios.get(`/cart/id?cartId=${cartId}`);
 
     return response?.data?.data;
   } catch (error) {

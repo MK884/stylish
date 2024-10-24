@@ -42,6 +42,7 @@ const cart = () => {
     []
   );
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isCartUpdating, setIsCartUpdating] = React.useState<boolean>(false);
   const [totalPrice, setTotalPrice] = React.useState<number>(0);
 
   const getCartProducts = async () => {
@@ -89,19 +90,21 @@ const cart = () => {
   const updateQuantity = async (quantity: number, productId: string) => {
     if (quantity < 1 || !productId) return;
 
+    setIsCartUpdating(true);
     try {
       const response = (await updateCart({
         axios,
         productId,
         qty: quantity,
       })) as ICartProduct[];
-      // onSelectItem(response);
       setCartItem(response);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
         ToastAndroid.show(error.message, ToastAndroid.SHORT);
       }
+    } finally {
+      setIsCartUpdating(false);
     }
   };
 
@@ -156,10 +159,15 @@ const cart = () => {
     }
     const price = checkOutItem.reduce((sum, item) => {
       const productPrice = item?.product?.[0]?.price || 0;
-      return sum + productPrice;
+      return sum + productPrice + 5;
     }, 0);
 
     setTotalPrice(price);
+  };
+
+  const goToCheckout = () => {
+    const id = checkOutItem?.map((item) => item._id)?.join();
+    router.push({ pathname: '/(app)/(screen)/checkout', params: { id } });
   };
 
   React.useEffect(() => {
@@ -366,8 +374,8 @@ const cart = () => {
             <Button
               title="Continue to checkout"
               tailwindClass="rounded-2xl"
-              disabled={totalPrice === 0}
-              onPress={() => router.push('/(app)/(screen)/checkout')}
+              disabled={totalPrice === 0 || isCartUpdating}
+              onPress={goToCheckout}
             />
           </View>
         </View>

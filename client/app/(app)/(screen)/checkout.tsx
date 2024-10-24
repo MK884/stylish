@@ -1,9 +1,10 @@
 import { Address, OrderSummary, Payment } from '@/components';
+import { getCartById, usePrivateAxios } from '@/services';
 import { Button, MyText } from '@/ui';
 import Feather from '@expo/vector-icons/Feather';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { Dimensions, Pressable, View } from 'react-native';
+import { Dimensions, Pressable, ToastAndroid, View } from 'react-native';
 import Animated, {
   FadeInDown,
   interpolate,
@@ -13,6 +14,8 @@ import Animated, {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const chcekout = () => {
+  const { id } = useLocalSearchParams<{ id: string }>();
+
   const paddingHorizontal = 22;
   const HEADER_HEIGHT = 60;
   const StepperColor = '#D3CEF6';
@@ -29,6 +32,11 @@ const chcekout = () => {
   const [selectedAddress, setSelectedAddress] = React.useState<
     Partial<IAddress>
   >({});
+  const [cartItem, setCartItem] = React.useState<Array<ICartProduct>>([]);
+  const [total, setTotal] = React.useState<number>(0);
+
+  const TAXES = 0;
+  const SHIPPING_CHARGE = 5;
 
   const stepperStyle = useAnimatedStyle(() => {
     const width = withSpring(
@@ -48,11 +56,55 @@ const chcekout = () => {
 
   const router = useRouter();
   const { width } = Dimensions.get('screen');
+  const axios = usePrivateAxios();
 
   const onAddressSelected = (item: IAddress) => {
     if (!item) return;
     setSelectedAddress(item);
   };
+
+  const getCartItems = async () => {
+    if (!id) return;
+
+    try {
+      const response = await getCartById({ axios, cartId: id });
+
+      setCartItem(response);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    }
+  };
+
+  const getSalePrice = (disscount: number, price: number) => {
+    const finalPrice = (disscount / 100) * price;
+    return price - finalPrice;
+  };
+
+  const calculateTotalPrice = () => {
+    if (!cartItem?.length) return;
+
+    const price = cartItem.reduce((prev, item) => {
+      const discount = item.product?.[0].discount ?? 0;
+      const price = item.product?.[0].price;
+
+      return prev + getSalePrice(discount, price) * item.quantity;
+    }, 0);
+
+    const totalPrice = price + SHIPPING_CHARGE + TAXES;
+
+    setTotal(totalPrice);
+  };
+
+  React.useEffect(() => {
+    getCartItems();
+  }, []);
+
+  React.useEffect(() => {
+    calculateTotalPrice();
+  }, [cartItem]);
 
   const data = [
     <Address
@@ -60,7 +112,7 @@ const chcekout = () => {
       userAddress={selectedAddress}
     />,
     <Payment />,
-    <OrderSummary address={selectedAddress} />,
+    <OrderSummary address={selectedAddress} cart={cartItem} />,
   ];
 
   return (
@@ -215,7 +267,9 @@ const chcekout = () => {
               <MyText className="text-lg">Subtotal (VAT included) </MyText>
             </View>
             <View>
-              <MyText className="text-black font-[700] text-[18px]">$99</MyText>
+              <MyText className="text-black font-[700] text-[18px]">
+                ${total}
+              </MyText>
             </View>
           </View>
 
