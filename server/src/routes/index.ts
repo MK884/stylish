@@ -4,3 +4,4 @@ export * from './category.routes';
 export * from './product.routes';
 export * from './cart.routes';
 export * from './address.routes';
+export * from './order.routes';

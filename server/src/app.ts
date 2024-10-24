@@ -28,6 +28,7 @@ import {
   productRouter,
   cartRouter,
   addressRouter,
+  orderRouter,
 } from './routes';
 
 app.use('/api/v1/user', userRouter);
@@ -36,6 +37,7 @@ app.use('/api/v1/category', categoryRoute);
 app.use('/api/v1/product', productRouter);
 app.use('/api/v1/cart', cartRouter);
 app.use('/api/v1/address', addressRouter);
+app.use('/api/v1/order', orderRouter);
 
 // @ts-ignore
 // app.use(errorHandler);

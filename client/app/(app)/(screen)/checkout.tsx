@@ -4,7 +4,7 @@ import {
   OrderSummary,
   Payment,
 } from '@/components';
-import { getCartById, usePrivateAxios } from '@/services';
+import { getCartById, placeOrder, usePrivateAxios } from '@/services';
 import { Button, MyText } from '@/ui';
 import Feather from '@expo/vector-icons/Feather';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -121,13 +121,28 @@ const chcekout = () => {
     <OrderSummary address={selectedAddress} cart={cartItem} />,
   ];
 
-  const onPay = () => {
+  const onPay = async () => {
     setIsOrderPlaced(true);
 
     setTimeout(() => {
       router.replace('/(app)/(screen)/order');
       setIsOrderPlaced(false);
     }, 2800);
+
+    if (!selectedAddress._id || !id) return;
+
+    try {
+      const response = await placeOrder({
+        addressId: selectedAddress._id,
+        cartId: id,
+        axios,
+      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    }
   };
 
   return (

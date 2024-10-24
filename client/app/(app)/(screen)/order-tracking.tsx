@@ -1,19 +1,55 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, ToastAndroid } from 'react-native';
 import React from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { Image } from 'react-native';
 import { Button, MyText } from '@/ui';
+import { getOrderById, usePrivateAxios } from '@/services';
 
 const orderTracking = () => {
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
+
+  if (!id) return;
+
+  const axios = usePrivateAxios();
+
+  const [item, setItem] = React.useState<Partial<IOrder>>({});
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const getOrderDetails = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getOrderById({ axios, orderId: id });
+
+      setItem(response);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    getOrderDetails();
+  }, []);
 
   const paddingHorizontal = 22;
-  const StepperColor = '#D3CEF6';
-  const activeStepperColor = '#614FE0';
   const stepperSize = 14;
+  // const StepperColor = '#D3CEF6';
+  // const activeStepperColor = '#614FE0';
+  const StepperColor = item?.status === 'cancelled' ? '#f6cece' : '#D3CEF6';
+  const activeStepperColor = item?.status === 'cancelled' ? 'red' : '#614FE0';
 
   // 0, 130, 240, 360
   const stepperWidth: number = 240;
+
+  const uri = item?.cartDetails?.[0].product[0].productImg[0].src;
+  const title = item?.cartDetails?.[0].product[0].title;
+  const size = item?.cartDetails?.[0].size;
+  const color = item?.cartDetails?.[0].color;
+  const orderId = item?._id?.slice(0, 8);
 
   return (
     <ScrollView className="bg-white ">

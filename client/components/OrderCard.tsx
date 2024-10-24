@@ -16,16 +16,24 @@ const sizeLabel: { [key: number]: string } = {
 const OrderCard = ({
   onView,
   onCancel,
+  item,
 }: {
   onView: () => void;
   onCancel: () => void;
+  item: IOrder;
 }) => {
-  const StepperColor = '#D3CEF6';
-  const activeStepperColor = '#614FE0';
+  const StepperColor = item.status === 'cancelled' ? '#f6cece' : '#D3CEF6';
+  const activeStepperColor = item.status === 'cancelled' ? 'red' : '#614FE0';
   const stepperSize = 14;
 
   // 0, 110, 210, 310
   const stepperWidth = 210;
+
+  const uri = item.cartDetails[0].product[0].productImg[0].src;
+  const title = item.cartDetails[0].product[0].title;
+  const size = item.cartDetails[0].size;
+  const color = item.cartDetails[0].color;
+  const id = item._id.slice(0, 8);
 
   return (
     <View className="bg-white rounded-2xl border border-[#dadada] p-6">
@@ -102,7 +110,7 @@ const OrderCard = ({
         >
           <Image
             source={{
-              uri: 'https://thehouseofrare.com/cdn/shop/files/henron-yellow-0359.jpg?v=1698919801&_gl=1*1dockzu*_up*MQ..&gclid=Cj0KCQjwpP63BhDYARIsAOQkATYCKSCJsclD5AXdivVuWX3ZqvV45sKEGJhr6ifog8tW6FLuXsJkux4aAh8REALw_wcB',
+              uri,
             }}
             style={{
               resizeMode: 'cover',
@@ -116,22 +124,21 @@ const OrderCard = ({
               className="capitalize text-black text-lg font-[500]"
               numberOfLines={1}
             >
-              bershka mom jeans
+              {title}
             </MyText>
           </View>
 
           <View className="flex-row space-x-3">
             <MyText className="text-[#575758] capitalize text-[14px]">
-              {/* {sizeLabel[item.size]} - {item.size} */}s - 26
+              {sizeLabel[size]} - {size}
             </MyText>
             <MyText className="text-[#575758] capitalize text-[14px]">|</MyText>
             <MyText className="text-[#575758] capitalize text-[14px]">
-              {/* {item.color} */}
-              blue
+              {color}
             </MyText>
             <MyText className="text-[#575758] capitalize text-[14px]">|</MyText>
             <MyText className="text-[#575758] uppercase text-[14px]">
-              id : 1912929
+              id : {id}
             </MyText>
           </View>
         </View>
@@ -147,14 +154,16 @@ const OrderCard = ({
             onPress={onView}
           />
         </View>
-        <View>
-          <Button
-            title="Cancel order"
-            tailwindClass="bg-white rounded-xl border border-[#dadada] py-3"
-            textStyle={{ color: 'black' }}
-            onPress={onCancel}
-          />
-        </View>
+        {item.status === 'pending' && (
+          <View>
+            <Button
+              title="Cancel order"
+              tailwindClass="bg-white rounded-xl border border-[#dadada] py-3"
+              textStyle={{ color: 'black' }}
+              onPress={onCancel}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
