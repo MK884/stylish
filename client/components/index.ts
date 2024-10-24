@@ -28,6 +28,7 @@ import OrderCard from './OrderCard';
 import Address from './Address';
 import Payment from './Payment';
 import OrderSummary from './OrderSummary';
+import OrderPlacedAnimation from './OrderPlacedAnimation';
 export {
   OnBoardingItem,
   OnBoardingScreen,
@@ -59,4 +60,5 @@ export {
   Address,
   Payment,
   OrderSummary,
+  OrderPlacedAnimation,
 };
