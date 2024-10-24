@@ -1,8 +1,9 @@
 import { MyText } from '@/ui';
 import React from 'react';
-import { Dimensions, Image, ScrollView, View } from 'react-native';
+import { Dimensions, Image, Pressable, ScrollView, View } from 'react-native';
 import Accordion from './Accordion';
 import Divider from './Divider';
+import { useRouter } from 'expo-router';
 
 const sizeLabel: { [key: number]: string } = {
   22: 'xxs',
@@ -54,6 +55,7 @@ const OrderSummary = ({
 }) => {
   const { width } = Dimensions.get('screen');
   const paddingHorizontal = 22;
+  const router = useRouter();
 
   const [total, setTotal] = React.useState<number>(0);
 
@@ -182,13 +184,19 @@ const OrderSummary = ({
 
           <View>
             {cart.map((item) => (
-              <ProductCard
+              <SProductCard
                 color={item.color}
                 quantity={item.quantity}
                 size={item.size}
                 title={item.product?.[0].title}
                 uri={item.product?.[0].productImg[0].src}
                 key={item._id}
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/(screen)/[productId]',
+                    params: { productId: item.productId },
+                  })
+                }
               />
             ))}
           </View>
@@ -215,22 +223,24 @@ const OrderSummary = ({
   );
 };
 
-const ProductCard = ({
+export const SProductCard = ({
   uri,
   title,
   color,
   quantity,
   size,
+  onPress,
 }: {
   uri: string;
   title: string;
   size: number;
   color: string;
   quantity: number;
+  onPress?: () => void;
 }) => {
   return (
-    <>
-      <View className="flex-row items-center space-x-2 py-4">
+    <View>
+      <Pressable className="flex-row items-center space-x-2 py-4">
         <View
           style={{ height: 70, aspectRatio: 1 }}
           className="overflow-hidden rounded-2xl"
@@ -255,14 +265,13 @@ const ProductCard = ({
             <MyText className="text-[#575758] capitalize text-[14px]">|</MyText>
             <MyText className="text-[#575758] capitalize text-[14px]">
               {color}
-              blue
             </MyText>
             <MyText className="text-[#575758] capitalize text-[14px]">|</MyText>
             <MyText className="text-[#575758] text-[14px]">x {quantity}</MyText>
           </View>
         </View>
-      </View>
-    </>
+      </Pressable>
+    </View>
   );
 };
 

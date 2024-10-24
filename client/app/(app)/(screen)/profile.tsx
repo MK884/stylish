@@ -19,6 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { deleteAddress, getAddress } from '@/services';
 import { router } from 'expo-router';
+import Octicons from '@expo/vector-icons/Octicons';
 
 const Profile = () => {
   let paddingHorizontal = 24;
@@ -247,17 +248,20 @@ const Profile = () => {
             <View>
               <Divider />
             </View>
-            <Pressable
-              className="flex-row justify-between"
-              style={{ paddingHorizontal }}
-            >
-              <MyText className="font-semibold text-lg">My Orders</MyText>
-              <Icon
-                name="shopping-bag"
-                size={24}
-                className="text-neutral-400"
-              />
-            </Pressable>
+
+            <View>
+              <Pressable
+                className="flex-row justify-between"
+                style={{ paddingHorizontal }}
+                onPress={() => router.push('/(app)/(screen)/order')}
+              >
+                <MyText className="font-semibold text-lg">
+                  My Orders and messages
+                </MyText>
+
+                <Octicons name="inbox" size={24} color="black" />
+              </Pressable>
+            </View>
             <View>
               <Divider />
             </View>

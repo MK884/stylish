@@ -163,16 +163,26 @@ const getOrderById = async (req: Request, res: Response) => {
           foreignField: '_id',
           localField: 'cart',
           as: 'cartDetails',
+          pipeline: [
+            {
+              $lookup: {
+                from: 'products',
+                foreignField: '_id',
+                localField: 'productId',
+                as: 'product',
+              },
+            },
+          ],
         },
       },
-      {
-        $lookup: {
-          from: 'products',
-          foreignField: '_id',
-          localField: 'cartDetails.productId',
-          as: 'productDetails',
-        },
-      },
+      // {
+      //   $lookup: {
+      //     from: 'products',
+      //     foreignField: '_id',
+      //     localField: 'cartDetails.productId',
+      //     as: 'productDetails',
+      //   },
+      // },
     ]);
 
     if (!orders.length) {
