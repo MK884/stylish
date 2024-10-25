@@ -1,6 +1,6 @@
-import { View, Text, Modal, ModalProps } from 'react-native';
-import React from 'react';
 import { Button, MyText } from '@/ui';
+import React from 'react';
+import { Modal, ModalProps, View } from 'react-native';
 
 interface DeleteModalProps extends Partial<ModalProps> {
   isVisible: boolean;

@@ -1,9 +1,3 @@
-import { View, Modal, Pressable, TextProps, ToastAndroid } from 'react-native';
-import React from 'react';
-import { z } from 'zod';
-import { Button, DropDown, MyText, TextInput } from '@/ui';
-import Feather from '@expo/vector-icons/Feather';
-import Icon from '@expo/vector-icons/FontAwesome';
 import {
   addAddress,
   countryAxios,
@@ -14,10 +8,14 @@ import {
   updateAddress,
   usePrivateAxios,
 } from '@/services';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Button, DropDown, MyText, TextInput } from '@/ui';
+import Feather from '@expo/vector-icons/Feather';
+import Icon from '@expo/vector-icons/FontAwesome';
 import { router, useLocalSearchParams } from 'expo-router';
-
-// modal => state, country, city, fullname, mobile number, pincode, type
+import React from 'react';
+import { Modal, Pressable, TextProps, ToastAndroid, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { z } from 'zod';
 
 const formSchema = z.object({
   fullName: z.string().min(4),
@@ -71,21 +69,6 @@ const LabelCheck = ({
     </View>
   );
 };
-
-interface IAddress {
-  _id: string;
-  userId: string;
-  fullName: string;
-  phone: string;
-  country: string;
-  state: string;
-  city: string;
-  pincode: string;
-  address: string;
-  type?: addressType;
-  createdAt: string;
-  updatedAt: string;
-}
 
 const AddressFormModal = () => {
   const paddingHorizontal = 22;

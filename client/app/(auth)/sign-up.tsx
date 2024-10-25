@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { setUser } from '@/features/auth/authSlice';
+import { register, login as userLogin } from '@/services/users';
+import { useAppDispatch } from '@/store/hook';
 import { Button, MyText, TextInput } from '@/ui';
 import { Link, router } from 'expo-router';
-import { login as userLogin, register } from '@/services/users';
-import { useAppDispatch } from '@/store/hook';
-import { setUser } from '@/features/auth/authSlice';
+import React from 'react';
+import { Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SignIn = () => {
   const [userName, setuserName] = React.useState<string>('');
@@ -62,10 +62,8 @@ const SignIn = () => {
       if (error instanceof Error) {
         if (error?.message === 'username already taken')
           setuserNameError(error?.message);
-        else
-          setEmailError(error?.message);
+        else setEmailError(error?.message);
         console.log(error);
-        
       }
     }
   };
@@ -117,7 +115,12 @@ const SignIn = () => {
           the public offer
         </MyText>
       </View>
-      <Button title="Register" tailwindClass="mt-20" disabled={isEmpty} onPress={onRegister}/>
+      <Button
+        title="Register"
+        tailwindClass="mt-20"
+        disabled={isEmpty}
+        onPress={onRegister}
+      />
       <MyText className="text-center my-4">
         I Already Have an Account{' '}
         <Link href={'/sign-in'} className="text-[#614FE0] font-semibold">

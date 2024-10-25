@@ -90,6 +90,9 @@ const getOrdersOfUser = async (req: Request, res: Response) => {
           ],
         },
       },
+      {
+        $sort: { createdAt: -1 },
+      },
       // {
       //   $lookup: {
       //     from: 'products',

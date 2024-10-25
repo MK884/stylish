@@ -22,7 +22,7 @@ const ProductImage = ({
     >
       <Pressable
         style={{ flex: 1 }}
-        onPressIn={() =>
+        onPress={() =>
           router.push({ pathname: '/(app)/[id]', params: { id: item._id } })
         }
       >

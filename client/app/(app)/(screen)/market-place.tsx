@@ -435,41 +435,35 @@ const MarketPlace = () => {
             <View className="flex-1 items-center justify-center z-0">
               <ActivityIndicator size={'large'} />
             </View>
-          ) : (
+          ) : products?.length ? (
             <View>
-              {products?.length ? (
-                <>
-                  <FlatList
-                    nestedScrollEnabled
-                    data={products}
-                    renderItem={({ item }) => (
-                      <ProductCard item={item} key={item._id} width={175} />
-                    )}
-                    keyExtractor={(item) => item._id}
-                    showsVerticalScrollIndicator={false}
-                    numColumns={2}
-                    scrollEnabled={false}
-                    ListFooterComponent={() => (
-                      <>
-                        <View className="flex-1 items-center justify-center">
-                          {isListLoading && (
-                            <ActivityIndicator size={'small'} />
-                          )}
-                        </View>
-                      </>
-                    )}
-                    onEndReachedThreshold={60}
-                    onEndReached={() =>
-                      setPage((prev) =>
-                        prev <= Math.ceil(total / limit) ? prev + 1 : prev
-                      )
-                    }
-                  />
-                </>
-              ) : (
-                <NoProducts />
-              )}
+              <FlatList
+                nestedScrollEnabled
+                data={products}
+                renderItem={({ item }) => (
+                  <ProductCard item={item} key={item._id} width={175} />
+                )}
+                keyExtractor={(item) => item._id}
+                showsVerticalScrollIndicator={false}
+                numColumns={2}
+                scrollEnabled={false}
+                ListFooterComponent={() => (
+                  <>
+                    <View className="flex-1 items-center justify-center">
+                      {isListLoading && <ActivityIndicator size={'small'} />}
+                    </View>
+                  </>
+                )}
+                onEndReachedThreshold={60}
+                onEndReached={() =>
+                  setPage((prev) =>
+                    prev <= Math.ceil(total / limit) ? prev + 1 : prev
+                  )
+                }
+              />
             </View>
+          ) : (
+            <NoProducts />
           )}
         </View>
       </Animated.ScrollView>

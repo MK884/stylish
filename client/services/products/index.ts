@@ -1,7 +1,5 @@
 import { AxiosError, AxiosInstance } from 'axios';
 
-// const { page, limit, search, color, size, category } = req?.query;
-
 const getAllProducts = async ({
   page = 0,
   search,

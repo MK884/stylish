@@ -1,9 +1,9 @@
 import { MyText } from '@/ui';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Dimensions, Image, Pressable, ScrollView, View } from 'react-native';
 import Accordion from './Accordion';
 import Divider from './Divider';
-import { useRouter } from 'expo-router';
 
 const sizeLabel: { [key: number]: string } = {
   22: 'xxs',

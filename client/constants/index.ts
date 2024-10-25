@@ -78,19 +78,6 @@ export const collection: collection[] = [
   },
 ];
 
-type colors =
-  | 'black'
-  | 'white'
-  | 'blue'
-  | 'brown'
-  | 'copper'
-  | 'gold'
-  | 'green'
-  | 'grey'
-  | 'navy'
-  | 'pink'
-  | 'orange';
-
 export const colorCode = {
   black: '#0E0E10',
   white: 'white',

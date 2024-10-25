@@ -1,18 +1,18 @@
-import {
-  View,
-  FlatList,
-  Dimensions,
-  Pressable,
-  ToastAndroid,
-  ActivityIndicator,
-} from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Feather from '@expo/vector-icons/Feather';
-import { MyText } from '@/ui';
-import { router, useRouter } from 'expo-router';
 import { StoreLogo } from '@/components';
 import { getAllStore, usePrivateAxios } from '@/services';
+import { MyText } from '@/ui';
+import Feather from '@expo/vector-icons/Feather';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Pressable,
+  ToastAndroid,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const stores = () => {
   const { width } = Dimensions.get('window');

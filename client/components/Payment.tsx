@@ -1,5 +1,8 @@
 import { Button, MyText } from '@/ui';
-import { useRouter } from 'expo-router';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import {
   Dimensions,
@@ -12,10 +15,6 @@ import {
   View,
 } from 'react-native';
 import Divider from './Divider';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import InputModal from './InputModal';
 
@@ -126,7 +125,6 @@ const cardMetaData = [
 const Payment = () => {
   const { width } = Dimensions.get('screen');
   const paddingHorizontal = 22;
-  const router = useRouter();
 
   const [isModelVisible, setIsModelVisible] = React.useState<boolean | number>(
     false

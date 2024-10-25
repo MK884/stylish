@@ -3,11 +3,10 @@ import {
   Collections,
   Featured,
   ProfileIcon,
-  Stores,
 } from '@/components';
 import Icon from '@expo/vector-icons/FontAwesome';
 import React from 'react';
-import { TextInput, View, FlatList, Dimensions } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const tabs: tab[] = [
@@ -19,10 +18,6 @@ const tabs: tab[] = [
     label: 'Collections',
     content: <Collections key={2} />,
   },
-  // {
-  //   label: 'Stores',
-  //   content: <Stores />,
-  // },
 ];
 
 const market = () => {

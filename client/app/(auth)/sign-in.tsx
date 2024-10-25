@@ -2,7 +2,6 @@ import { isLoggedIn, setUser } from '@/features/auth/authSlice';
 import { login } from '@/services/users';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { Button, MyText, TextInput } from '@/ui';
-import { AxiosError } from 'axios';
 import { Link, Redirect, router } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
@@ -21,7 +20,7 @@ const SignUp = () => {
 
   const Auth = useAppSelector(isLoggedIn);
 
-  if(Auth) return <Redirect href={'/(app)/(tabs)/feed'} />
+  if (Auth) return <Redirect href={'/(app)/(tabs)/feed'} />;
 
   const onEmailChange = (text: string) => {
     setEmailError('');
@@ -43,10 +42,9 @@ const SignUp = () => {
       const response = await login({ email, password });
 
       // console.log('login response =>', response);
-      dispatch(setUser(response))
+      dispatch(setUser(response));
 
-      router.replace('/(app)/(tabs)/feed')
-
+      router.replace('/(app)/(tabs)/feed');
     } catch (error) {
       if (error instanceof Error) {
         setPasswordError(error?.message);

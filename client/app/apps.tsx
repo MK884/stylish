@@ -1,12 +1,12 @@
 import Entypo from '@expo/vector-icons/Entypo';
 import React from 'react';
 import {
+  FlatList,
   Pressable,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  FlatList,
 } from 'react-native';
 
 const Options = ({

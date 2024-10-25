@@ -17,7 +17,6 @@ import ProductCard from './ProductCard';
 import ProfileIcon from './ProfileIcon';
 import StoreCard from './StoreCard';
 import StoreLogo from './StoreLogo';
-import Stores from './Stores';
 import AboutStore from './AboutStore';
 import StoreOverview from './StoreOverview';
 import CheckBoxLabel from './CheckBoxLabel';
@@ -43,7 +42,6 @@ export {
   StoreCard,
   ProductCard,
   Featured,
-  Stores,
   Collections,
   StoreLogo,
   Accordion,

@@ -1,11 +1,10 @@
 import { MyText } from '@/ui';
 import React from 'react';
-import { Dimensions, FlatList, Image, View } from 'react-native';
+import { FlatList, Image, View } from 'react-native';
 import ProductCard from './ProductCard';
 
 const StoreOverview = ({ products, store }: StoreOverview) => {
   const paddingHorizontal = 22;
-  const { width } = Dimensions.get('screen');
 
   const peakProducts = products?.filter((_, idx) => idx % 2 === 0);
   const lowestPriceProducts = products?.filter((_, idx) => idx % 2 !== 0);

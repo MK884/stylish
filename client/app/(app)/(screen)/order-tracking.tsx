@@ -56,8 +56,16 @@ const orderTracking = () => {
 
   const paddingHorizontal = 22;
   const stepperSize = 14;
-  const StepperColor = item?.status === 'cancelled' ? '#f6cece' : '#D3CEF6';
-  const activeStepperColor = item?.status === 'cancelled' ? 'red' : '#614FE0';
+  const isPending = item?.status === 'pending';
+  const StepperColor = !isPending ? '#f6cece' : '#D3CEF6';
+  const activeStepperColor = !isPending ? 'red' : '#614FE0';
+  const lastUpdate =
+    item?.updatedAt &&
+    new Date(item.updatedAt).toLocaleString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
   const router = useRouter();
 
   // 0, 130, 240, 360
@@ -245,15 +253,26 @@ const orderTracking = () => {
           <View style={{ paddingHorizontal }} className="space-y-6">
             <View>
               <View>
-                <MyText className="text-black font-[700] text-[22px] self-start my-2">
+                {/* <MyText className="text-black font-[700] text-[22px] self-start my-2">
                   Your package is on it's way!
-                </MyText>
+                </MyText> */}
+                {isPending ? (
+                  <MyText className="text-black font-[700] text-[22px] self-start my-2">
+                    Your package is on it's way!
+                  </MyText>
+                ) : (
+                  <MyText className="text-red-500 font-[700] text-[22px] self-start my-2">
+                    Cancelled on {lastUpdate}
+                  </MyText>
+                )}
               </View>
-              <View>
-                <MyText className="text-[#575758] font-[400] text-[18px] self-start ">
-                  Arrival estimate: April 15
-                </MyText>
-              </View>
+              {isPending && (
+                <View>
+                  <MyText className="text-[#575758] font-[400] text-[18px] self-start ">
+                    Arrival estimate: April 15
+                  </MyText>
+                </View>
+              )}
             </View>
 
             <View>
@@ -347,7 +366,7 @@ const orderTracking = () => {
           </View>
 
           {/* action */}
-          {item?.status === 'pending' && (
+          {isPending && (
             <View style={{ padding: paddingHorizontal }}>
               <Button
                 title="Cancel order"

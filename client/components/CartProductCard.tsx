@@ -30,7 +30,8 @@ const CartProductCard = ({
 
   React.useEffect(() => {
     setPrice(quantity * item.product[0].price);
-    onSelect(quantity * item.product[0].price, true);
+    if (item.quantity !== quantity)
+      onSelect(quantity * item.product[0].price, true);
     const timerId = setTimeout(
       () => onQuantityUpdate(quantity, item.productId),
       1500

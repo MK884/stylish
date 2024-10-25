@@ -89,12 +89,7 @@ const update = async ({
   data: Partial<IUser>;
   axios: AxiosInstance;
 }) => {
-  const isEmpty = !(
-    data?.email ||
-    data?.phone ||
-    data?.publicName ||
-    data?.avatarUrl
-  );
+  const isEmpty = !(data?.email || data?.phone || data?.publicName);
 
   if (isEmpty) return;
 
@@ -102,26 +97,6 @@ const update = async ({
   if (data?.email) formData.append('email', data.email);
   if (data?.publicName) formData.append('publicName', data.publicName);
   if (data?.phone) formData.append('phone', data.phone);
-  if (data?.avatarUrl) {
-    const uriArray = data.avatarUrl.split('.');
-    const type = uriArray[uriArray.length - 1];
-    const response = await fetch(data.avatarUrl);
-    const blob = await response.blob();
-    console.log(blob);
-    
-    // formData.append('avatar', new File([blob], `avatar.${type}`, { type: `image/${type}` }));
-    // Convert the image at the URI to a Blob
-    // const blob = await fetch(data.avatarUrl).then(res => res.blob());
-    // formData.append('avatar',  blob, 'avatar.jpg')
-    // @ts-ignore
-    // formData.append('avatar', {
-    //   uri: data.avatarUrl,
-    //   name: `image/${type}`,
-    //   type: `image/${type}`
-    // })
-  }
-
-  console.log('form data =>', { ...formData });
 
   try {
     const response = await axios.patch('/user/update', formData, {
@@ -185,4 +160,3 @@ const getUser = async (axios: AxiosInstance) => {
 };
 
 export { deleteUser, getUser, login, logout, register, update };
-

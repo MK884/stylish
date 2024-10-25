@@ -1,25 +1,25 @@
 import { AddressCard, DeleteModal, Divider, InputModal } from '@/components';
+import { changeAvatar, logout, useUser } from '@/features/auth/authSlice';
+import { deleteAddress, getAddress } from '@/services';
+import { usePrivateAxios } from '@/services/api';
+import { getUser, update, logout as userLogout } from '@/services/users';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { Button, MyText } from '@/ui';
+import Icon from '@expo/vector-icons/FontAwesome';
+import Octicons from '@expo/vector-icons/Octicons';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import React from 'react';
 import {
   ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
-  View,
   ToastAndroid,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import Icon from '@expo/vector-icons/FontAwesome';
-import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { getUser, update, logout as userLogout } from '@/services/users';
-import { usePrivateAxios } from '@/services/api';
-import { changeAvatar, logout, useUser } from '@/features/auth/authSlice';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import { deleteAddress, getAddress } from '@/services';
-import { router } from 'expo-router';
-import Octicons from '@expo/vector-icons/Octicons';
 
 const Profile = () => {
   let paddingHorizontal = 24;
@@ -92,7 +92,6 @@ const Profile = () => {
     const data: Partial<IUser> = {};
 
     if (email !== userData?.email) data.email = email;
-    // if (avatar !== userData?.avatarUrl) data.avatarUrl = avatar;
     if (publiName !== userData?.publicName) data.publicName = publiName;
     if (phone !== userData?.phone) data.phone = phone;
 
@@ -122,10 +121,6 @@ const Profile = () => {
       if (!result.canceled) {
         setIsLoading(true);
         const image = result.assets[0].uri;
-        // const uri = await FileSystem.readAsStringAsync(image, { encoding: 'base64'})
-        // const response = await update({data: { avatarUrl: image}, axios})
-        // console.log(image);
-        // console.log("resp =>",response);
 
         const uploadResult = await FileSystem.uploadAsync(
           `${process.env.EXPO_PUBLIC_API_URL}/user/update`,

@@ -1,18 +1,17 @@
+import { NoProducts, OrderCard } from '@/components';
+import { cancelOrder, getAllOrders, usePrivateAxios } from '@/services';
+import Entypo from '@expo/vector-icons/Entypo';
+import Octicons from '@expo/vector-icons/Octicons';
+import { useRouter } from 'expo-router';
+import React from 'react';
 import {
-  View,
-  FlatList,
+  ActivityIndicator,
   Pressable,
   ScrollView,
   ToastAndroid,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import Entypo from '@expo/vector-icons/Entypo';
-import Octicons from '@expo/vector-icons/Octicons';
-import { NoProducts, OrderCard } from '@/components';
-import { cancelOrder, getAllOrders, usePrivateAxios } from '@/services';
 
 const order = () => {
   const router = useRouter();

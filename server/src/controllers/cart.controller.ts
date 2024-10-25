@@ -19,6 +19,9 @@ const getAllCartOfUser = async (req: Request, res: Response) => {
           as: 'product',
         },
       },
+      {
+        $sort: { createdAt: -1 },
+      },
     ]);
 
     if (!cart.length) {
@@ -140,6 +143,9 @@ const addToCart = async (req: Request, res: Response) => {
             as: 'product',
           },
         },
+        {
+          $sort: { createdAt: -1 },
+        },
       ]);
 
       res.status(202).json({
@@ -240,6 +246,9 @@ const removeFromCart = async (req: Request, res: Response) => {
           localField: 'productId',
           as: 'product',
         },
+      },
+      {
+        $sort: { createdAt: -1 },
       },
     ]);
 

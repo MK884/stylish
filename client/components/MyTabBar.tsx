@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { MyText } from '@/ui';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { TouchableOpacity, View } from 'react-native';
 
 function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   let primaryColor = '#614FE0';

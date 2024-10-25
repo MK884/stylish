@@ -1,14 +1,9 @@
 import { Request, Response } from 'express';
-import { z } from 'zod';
-import {
-  ApiError,
-  ApiResponse,
-  deleteSingleAsset,
-  uploadOnCloudinary,
-} from '../utils';
-import { User } from '../models';
-import { cookieOpt } from '../constant';
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
+import { z } from 'zod';
+import { cookieOpt } from '../constant';
+import { User } from '../models';
+import { ApiError, deleteSingleAsset, uploadOnCloudinary } from '../utils';
 
 const registerUserschema = z.object({
   userName: z.string().min(1),
@@ -322,11 +317,19 @@ const deleteUser = async (
   try {
     const user = await User.findById(userId);
 
-    if (!user) throw new ApiError(404, 'No User to delete');
+    // if (!user) throw new ApiError(404, 'No User to delete');
+    if (!user) {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'No User to delete',
+      });
+      return;
+    }
 
     const deletedUser = await User.findByIdAndDelete(user?._id);
 
-    if (deletedUser === null) throw new ApiError(500, 'DB Error');
+    // if (deletedUser === null) throw new ApiError(500, 'DB Error');
 
     if (deletedUser?.avatarUrl) {
       await deleteSingleAsset(deletedUser?.avatarUrl);
@@ -388,7 +391,12 @@ const refreshUserToken = async (
       .status(200)
       .cookie('accessToken', accessToken, cookieOpt)
       .cookie('refreshToken', refreshToken, cookieOpt)
-      .json(new ApiResponse(200, 'success', { accessToken, refreshToken }));
+      .json({
+        statusCode: 200,
+        success: true,
+        message: 'success',
+        data: { accessToken, refreshToken },
+      });
   } catch (error) {
     if (error instanceof TokenExpiredError) {
       res.status(403).json({
@@ -441,11 +449,11 @@ const getCurrentUser = async (req: Request, res: Response) => {
 };
 
 export {
-  registerUser,
+  deleteUser,
+  getCurrentUser,
   loginUser,
   logoutUser,
-  deleteUser,
-  updateUser,
   refreshUserToken,
-  getCurrentUser,
+  registerUser,
+  updateUser,
 };

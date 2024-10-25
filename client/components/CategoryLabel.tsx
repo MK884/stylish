@@ -1,7 +1,7 @@
-import { View, Text, Pressable, PressableProps } from 'react-native';
-import React from 'react';
 import { MyText } from '@/ui';
-import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated';
+import React from 'react';
+import { Pressable, PressableProps, View } from 'react-native';
+import Animated, { FadeInRight } from 'react-native-reanimated';
 
 interface CategoryLabelProps extends PressableProps {
   label: string;

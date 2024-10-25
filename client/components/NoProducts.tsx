@@ -1,6 +1,5 @@
-import { View, Text, Image } from 'react-native';
 import React from 'react';
-import { MyText } from '@/ui';
+import { Image, View } from 'react-native';
 
 const bg = require('@/assets/images/no_products.png');
 

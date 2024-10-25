@@ -1,7 +1,6 @@
-import { View, Text, Image } from 'react-native';
-import React from 'react';
-import { useSharedValue } from 'react-native-reanimated';
 import { Button, MyText } from '@/ui';
+import React from 'react';
+import { Image, View } from 'react-native';
 
 const sizeLabel: { [key: number]: string } = {
   22: 'xxs',

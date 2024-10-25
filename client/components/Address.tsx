@@ -15,8 +15,6 @@ const AddressCard = ({
   isSelected?: boolean;
   onPress?: () => void;
 }) => {
-  // const [isSelected, setIsSleisSelected] = React.useState<boolean>(false);
-
   const CheckBoxSize = 12;
   const activeColor = isSelected ? '#614FE0' : '#bababa';
   const backgroundColor = isSelected ? '#EFEDFC' : '#fff';

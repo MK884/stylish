@@ -1,6 +1,6 @@
-import { View, Text, Dimensions } from 'react-native';
-import React from 'react';
 import LottieView from 'lottie-react-native';
+import React from 'react';
+import { Dimensions, View } from 'react-native';
 
 const OrderPlacedAnimation = () => {
   const { height, width } = Dimensions.get('screen');

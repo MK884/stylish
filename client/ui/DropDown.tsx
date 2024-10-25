@@ -1,13 +1,12 @@
 import Octicons from '@expo/vector-icons/Octicons';
 import React from 'react';
 import {
+  FlatList,
+  Modal,
   Pressable,
   TextInput,
   TouchableOpacity,
   View,
-  FlatList,
-  Modal,
-  ScrollView,
 } from 'react-native';
 import MyText from './MyText';
 
@@ -30,13 +29,13 @@ const Options = ({
           {label}
         </MyText>
         {isSelected && (
-        <View
-          style={{ height: 22, aspectRatio: 1 }}
-          className="flex items-center justify-center rounded-lg bg-[#614FE0] overflow-hidden"
-        >
-          <Octicons name="check" size={16} color="white" />
-        </View>
-      )}
+          <View
+            style={{ height: 22, aspectRatio: 1 }}
+            className="flex items-center justify-center rounded-lg bg-[#614FE0] overflow-hidden"
+          >
+            <Octicons name="check" size={16} color="white" />
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );

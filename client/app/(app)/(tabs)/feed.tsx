@@ -71,12 +71,6 @@ const feed = () => {
   }) => {
     if (isAppend) {
       setProducts((prevProducts) => {
-        // const uniqueProducts = [
-        //   ...prevProducts,
-        //   ...data.filter(
-        //     (newP) => !prevProducts.some((prevP) => prevP._id === newP._id)
-        //   ),
-        // ];
         const duplicateData = data.filter((newP) =>
           prevProducts.some((prevP) => prevP._id === newP._id)
         );
