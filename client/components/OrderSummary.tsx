@@ -28,7 +28,7 @@ const ProductLabel = ({
 }) => {
   return (
     <View className="flex-row items-center justify-between">
-      <View>
+      <View className="flex-1">
         <MyText
           className="font-[400] capitalize"
           numberOfLines={1}
@@ -37,8 +37,11 @@ const ProductLabel = ({
           {title}
         </MyText>
       </View>
-      <View>
-        <MyText className="text-[16px] font-[500]" style={{ color, fontSize }}>
+      <View className="" style={{ width: '15%' }}>
+        <MyText
+          className="text-[16px] font-[500] self-end"
+          style={{ color, fontSize }}
+        >
           ${price}
         </MyText>
       </View>
@@ -240,7 +243,10 @@ export const SProductCard = ({
 }) => {
   return (
     <View>
-      <Pressable className="flex-row items-center space-x-2 py-4">
+      <Pressable
+        className="flex-row items-center space-x-2 py-4"
+        onPress={onPress}
+      >
         <View
           style={{ height: 70, aspectRatio: 1 }}
           className="overflow-hidden rounded-2xl"
