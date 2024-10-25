@@ -6,10 +6,8 @@ import {
   useFonts,
 } from '@expo-google-fonts/montserrat';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -28,11 +26,8 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView className="flex-1">
-      <View className="flex-1 bg-white">
-        <OnBoardingScreen items={onBoardData} />
-      </View>
-      <StatusBar style="auto" />
-    </SafeAreaView>
+    <View className="flex-1 bg-[#C0C4FF]">
+      <OnBoardingScreen items={onBoardData} />
+    </View>
   );
 }

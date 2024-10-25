@@ -1,16 +1,8 @@
-import { Link } from 'expo-router';
+import Feather from '@expo/vector-icons/Feather';
+import { Link, router } from 'expo-router';
 import React from 'react';
-import {
-  Animated,
-  Dimensions,
-  FlatList,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Animated, Dimensions, FlatList, Pressable, View } from 'react-native';
 import OnBoardItem from './OnBoardingItem';
-import { MyText } from '@/ui';
 
 const OnBoardingScreen = ({
   items,
@@ -31,15 +23,27 @@ const OnBoardingScreen = ({
     });
   };
 
+  const goToNext = () => {
+    if (currentIdx === items?.length - 1) {
+      router.push('/(auth)/sign-in');
+      return;
+    }
+    scrollToSlide(currentIdx + 1);
+  };
+
   return (
-    <View style={{ width: width, height: height }}>
-      <View className="flex-row justify-between p-2">
-        <View className="flex-row">
-          <MyText>{currentIdx + 1}</MyText>
-          <MyText className="text-[#A8A8A9]">/{items?.length}</MyText>
-        </View>
-        <Link href="/(auth)/sign-in">Skip</Link>
-      </View>
+    <View style={{ width: width, height: height, paddingTop: 32 }}>
+      <Animated.View className="flex-row h-12 items-center justify-center space-x-1">
+        {items?.map((item, idx) => (
+          <Pressable
+            onPress={() => scrollToSlide(idx)}
+            key={item.id}
+            className={`w-2 h-2 rounded-full ${
+              currentIdx === idx ? 'bg-black w-8' : 'bg-[#dadada]'
+            }`}
+          ></Pressable>
+        ))}
+      </Animated.View>
       <Animated.FlatList
         data={items}
         renderItem={({ item }) => <OnBoardItem item={item} />}
@@ -53,42 +57,38 @@ const OnBoardingScreen = ({
           );
         }}
       />
-      <View className="relative h-16 px-2">
-        <Animated.View className="flex-row h-12 items-center justify-center gap-1">
-          {items?.map((item, idx) => (
-            <Pressable
-              onPress={() => scrollToSlide(idx)}
-              key={item.id}
-              className={`w-2 h-2 rounded-full ${
-                currentIdx === idx ? 'bg-black w-8' : 'bg-[#dadada]'
-              }`}
-            ></Pressable>
-          ))}
-        </Animated.View>
-        {currentIdx !== 0 && (
-          <TouchableOpacity onPress={() => scrollToSlide(currentIdx - 1)}>
-            <MyText className="text-[#A8A8A9] absolute left-0 bottom-3">
-              Prev
-            </MyText>
-          </TouchableOpacity>
-        )}
-        {currentIdx !== items?.length ? (
-          currentIdx === items?.length - 1 ? (
-            <Link href="/(auth)/sign-in" asChild>
-              <TouchableOpacity onPress={() => scrollToSlide(currentIdx + 1)}>
-                <MyText className="text-[#614FE0] absolute right-0 bottom-3">
-                  Get Started
-                </MyText>
-              </TouchableOpacity>
+
+      <View className="absolute bg-white  bottom-48 rounded-l-lg right-0 h-16 aspect-video -z-10 " />
+      <View
+        className="bg-[#C0C4FF] h-16 aspect-video z-10 absolute bottom-[196px]  right-0"
+        style={{ borderBottomRightRadius: 70 }}
+      />
+      <View
+        className="bg-white absolute -bottom-11 justify-end"
+        style={{
+          height: 240,
+          width: '100%',
+          borderTopLeftRadius: 70,
+        }}
+      >
+        <View className="flex-row items-center justify-between px-6 py-16">
+          <View className="">
+            <Link
+              href="/(auth)/sign-in"
+              className="text-[#a8a8a8] text-lg font-[500]"
+            >
+              Skip
             </Link>
-          ) : (
-            <TouchableOpacity onPress={() => scrollToSlide(currentIdx + 1)}>
-              <MyText className="text-[#614FE0] absolute right-0 bottom-3">
-                Next
-              </MyText>
-            </TouchableOpacity>
-          )
-        ) : null}
+          </View>
+          <View
+            className="bg-[#6b5bdf] p-2 rounded-xl"
+            style={{ elevation: 4 }}
+          >
+            <Pressable onPress={goToNext}>
+              <Feather name="arrow-right" size={28} color="white" />
+            </Pressable>
+          </View>
+        </View>
       </View>
     </View>
   );

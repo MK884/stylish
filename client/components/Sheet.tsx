@@ -4,7 +4,6 @@ import BottomSheet, {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import React, { PropsWithChildren, useCallback, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
 
 interface BottomSheetInterface extends PropsWithChildren, Partial<BottomSheet> {
   snapPoints?: Array<number | string>;
