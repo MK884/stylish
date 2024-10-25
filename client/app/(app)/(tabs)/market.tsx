@@ -13,11 +13,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const tabs: tab[] = [
   {
     label: 'Featured',
-    content: <Featured />,
+    content: <Featured key={1} />,
   },
   {
     label: 'Collections',
-    content: <Collections />,
+    content: <Collections key={2} />,
   },
   // {
   //   label: 'Stores',

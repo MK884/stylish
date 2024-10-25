@@ -143,7 +143,7 @@ const Featured = () => {
               contentContainerStyle={{ gap: 20, paddingHorizontal }}
               ListFooterComponent={() => (
                 <>
-                  <View className="flex-1 items-center justify-center">
+                  <View className="flex-1 items-center justify-center" key={12}>
                     {isProductOnSaleLoading && (
                       <ActivityIndicator size={'small'} />
                     )}

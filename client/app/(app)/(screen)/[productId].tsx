@@ -21,6 +21,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Pressable,
@@ -216,7 +217,9 @@ const ProductPage = () => {
       </View>
       <View style={{ flex: 1 }}>
         {isLoading ? (
-          <MyText>Loading...</MyText>
+          <View className="flex-1 items-center justify-center z-0">
+            <ActivityIndicator size={'large'} />
+          </View>
         ) : (
           <View className="flex-1 ">
             <View className="mb-2">
@@ -229,6 +232,7 @@ const ProductPage = () => {
                     index={index}
                     total={product ? product.productImg.length : 0}
                     AnimatedStyle={animatedImageStyle}
+                    key={index}
                   />
                 )}
                 bounces={false}
@@ -449,6 +453,7 @@ const ProductPage = () => {
                   setSelectedSize(item.size);
                   closeSheet();
                 }}
+                key={item.label}
                 isSelected={selectedSize === item.size}
                 label={item.label}
                 size={item.size}

@@ -158,7 +158,7 @@ const MarketPlace = () => {
     isAppend = true,
   }: {
     data: IProduct[];
-    isAppend: boolean;
+    isAppend?: boolean;
   }) => {
     if (isAppend) {
       setProducts((prevProducts) => {
@@ -188,7 +188,9 @@ const MarketPlace = () => {
 
       if (size) data.size = size;
       if (color) data.color = color;
+
       const response = await getAllProducts({ ...data, axios });
+
       if (selectedCategory === 'All') {
         // @ts-ignore
         setProductsData({ data: response?.products });
@@ -233,7 +235,8 @@ const MarketPlace = () => {
     try {
       setIsListLoading(true);
       const response = await getAllProducts({ ...data, axios });
-      setProducts((prev) => [...prev, ...response?.products]);
+      // setProducts((prev) => [...prev, ...response?.products]);
+      setProductsData({ data: response?.products });
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -260,15 +263,15 @@ const MarketPlace = () => {
   const tabs: tab[] = [
     {
       label: 'color',
-      content: <MyText>color</MyText>,
+      content: <MyText key={1}>color</MyText>,
     },
     {
       label: 'size',
-      content: <MyText>size</MyText>,
+      content: <MyText key={2}>size</MyText>,
     },
     {
       label: 'category',
-      content: <MyText>category</MyText>,
+      content: <MyText key={3}>category</MyText>,
     },
   ];
 
@@ -304,11 +307,33 @@ const MarketPlace = () => {
     return array.join();
   };
 
-  const resetFilters = () => {
+  const resetFilters = async () => {
     setSelectedCategory('All');
     setSelectedSize([]);
     setSelectedColors([]);
     closeSheet();
+    setPage(0);
+
+    setIsLoading(true);
+    try {
+      const data: { [key: string]: unknown } = {
+        page: 0,
+        limit,
+      };
+
+      const response = await getAllProducts({ ...data, axios });
+
+      setProductsData({ data: response?.products });
+
+      setTotal(response?.total);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const applytFilters = async () => {
@@ -316,14 +341,14 @@ const MarketPlace = () => {
     const color = arrayToString(selectedColors);
 
     if (!size && !color) return;
-    console.log('reeach', color, selectedColors);
 
     setPage(0);
     closeSheet();
+    let category = selectedCategory === 'All' ? '' : selectedCategory;
     const data: { [key: string]: unknown } = {
       page: 0,
       limit,
-      category: selectedCategory,
+      category,
     };
 
     if (size) data.size = size;
@@ -332,8 +357,6 @@ const MarketPlace = () => {
     setIsLoading(true);
     try {
       const response = await getAllProducts({ ...data, axios });
-
-      console.log('resp =>', response);
 
       setProductsData({ data: response?.products, isAppend: false });
 
@@ -356,6 +379,7 @@ const MarketPlace = () => {
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-white">
       <Animated.ScrollView
+        nestedScrollEnabled
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
@@ -416,6 +440,7 @@ const MarketPlace = () => {
               {products?.length ? (
                 <>
                   <FlatList
+                    nestedScrollEnabled
                     data={products}
                     renderItem={({ item }) => (
                       <ProductCard item={item} key={item._id} width={175} />
@@ -493,7 +518,7 @@ const MarketPlace = () => {
                         borderColor: '#dadada',
                         borderTopWidth: 1,
                         padding: 20,
-                        // paddingBottom: 60,
+                        paddingBottom: 60,
                       }}
                     >
                       {colors.map((color) => (
@@ -521,6 +546,7 @@ const MarketPlace = () => {
                     >
                       {ClothesSize.map((item) => (
                         <CheckBoxLabel
+                          key={item.label}
                           isDisable={false}
                           onPress={() => {
                             setSize(item.size);
@@ -555,6 +581,7 @@ const MarketPlace = () => {
                         }}
                         isSelected={selectedCategory === item}
                         label={item}
+                        key={item}
                       />
                     ))}
                   </View>

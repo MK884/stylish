@@ -53,6 +53,7 @@ const Collections = () => {
         numColumns={2}
         renderItem={({ item }) => (
           <Box
+            key={item.label}
             label={item.label}
             bg={item.src}
             onPress={() =>

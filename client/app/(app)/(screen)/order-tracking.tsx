@@ -1,14 +1,14 @@
+import { SProductCard } from '@/components/OrderSummary';
+import { cancelOrder, getOrderById, usePrivateAxios } from '@/services';
+import { Button, MyText } from '@/ui';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React from 'react';
 import {
-  View,
+  ActivityIndicator,
   ScrollView,
   ToastAndroid,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import React from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, MyText } from '@/ui';
-import { getOrderById, usePrivateAxios } from '@/services';
-import { SProductCard } from '@/components/OrderSummary';
 
 const orderTracking = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -39,6 +39,20 @@ const orderTracking = () => {
   React.useEffect(() => {
     getOrderDetails();
   }, []);
+
+  const onCancel = async () => {
+    if (!id) return;
+
+    try {
+      const response = await cancelOrder({ axios, orderId: id });
+      getOrderDetails();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    }
+  };
 
   const paddingHorizontal = 22;
   const stepperSize = 14;
@@ -339,7 +353,7 @@ const orderTracking = () => {
                 title="Cancel order"
                 tailwindClass="bg-white rounded-xl border border-[#dadada] py-3"
                 textStyle={{ color: 'black' }}
-                onPress={() => {}}
+                onPress={onCancel}
               />
             </View>
           )}

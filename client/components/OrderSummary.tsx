@@ -88,7 +88,7 @@ const OrderSummary = ({
 
   return (
     <ScrollView style={{ width }}>
-      <View style={{ paddingBottom: 290 }}>
+      <View style={{ paddingBottom: 350 }}>
         {/* cost summary*/}
         <View style={{ padding: paddingHorizontal }} className="space-y-4">
           {cart.map((item) => (

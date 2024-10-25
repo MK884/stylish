@@ -1,16 +1,8 @@
-import {
-  View,
-  Text,
-  ToastAndroid,
-  Dimensions,
-  Image,
-  Pressable,
-} from 'react-native';
+import { View, ToastAndroid, Dimensions, Image, Pressable } from 'react-native';
 import React from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { getProductsByStoreId, usePrivateAxios } from '@/services';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
 import { MyText } from '@/ui';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AboutStore, CategoryLabel, StoreOverview } from '@/components';
@@ -21,7 +13,6 @@ import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
 } from 'react-native-reanimated';
 
 const storePage = () => {
@@ -29,16 +20,12 @@ const storePage = () => {
 
   if (!storeId) return;
 
-  // const LOGO_SIZE = 120;
-  // const HEADER_HEIGHT = 70;
-  // const paddingHorizontal = 22;
   const LOGO_SIZE = 120;
   const HEADER_HEIGHT = 60;
   const paddingHorizontal = 22;
   const constantTPadding = 80;
 
   const axios = usePrivateAxios();
-  const { height, width } = Dimensions.get('window');
 
   const [store, setStore] = React.useState<IStore | null>(null);
   const [total, setTotal] = React.useState<number>(0);
@@ -77,9 +64,9 @@ const storePage = () => {
       label: 'overview',
       content:
         products && store ? (
-          <StoreOverview store={store} products={products} key={1} />
+          <StoreOverview store={store} products={products} key={store._id} />
         ) : (
-          <MyText>Loading...</MyText>
+          <MyText key={1}>Loading...</MyText>
         ),
     },
     {
@@ -87,7 +74,7 @@ const storePage = () => {
       content: store ? (
         <AboutStore store={store} key={store._id} total={total} />
       ) : (
-        <MyText>Loading....</MyText>
+        <MyText key={2}>Loading....</MyText>
       ),
     },
   ];

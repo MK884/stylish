@@ -27,16 +27,25 @@ const OrderCard = ({
   const stepperSize = 14;
 
   // 0, 110, 210, 310
+  const stepperWidthArray = [0, 110, 210, 310];
   const stepperWidth = 210;
 
   const uri = item.cartDetails[0].product[0].productImg[0].src;
+  const uri2 = item?.cartDetails?.[1]?.product?.[0]?.productImg?.[0].src;
   const title = item.cartDetails[0].product[0].title;
   const size = item.cartDetails[0].size;
   const color = item.cartDetails[0].color;
   const id = item._id.slice(0, 8);
+  const isPending = item.status === 'pending';
+  const lastUpdate = new Date(item?.updatedAt).toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+  const numberOfPackage = item.cartDetails.length;
 
   return (
-    <View className="bg-white rounded-2xl border border-[#dadada] p-6">
+    <View className="bg-white rounded-2xl border border-[#dadada] p-6 overflow-hidden">
       {/* stepper */}
       <View className="flex-row item-center justify-between relative overflow-hidden my-2">
         <View
@@ -99,9 +108,15 @@ const OrderCard = ({
         </MyText>
       </View>
       <View>
-        <MyText className="text-[#575758] font-[400] text-[16px] self-start ">
-          Arrival estimate: April 15
-        </MyText>
+        {isPending ? (
+          <MyText className="text-[#575758] font-[400] text-[16px] self-start ">
+            Arrival estimate: April 15
+          </MyText>
+        ) : (
+          <MyText className="text-red-500 font-[400] text-[16px] self-start ">
+            Cancelled on {lastUpdate}
+          </MyText>
+        )}
       </View>
       <View className="flex-row items-center space-x-2 my-4">
         <View
@@ -118,6 +133,22 @@ const OrderCard = ({
             }}
           />
         </View>
+        {uri2 && (
+          <View
+            style={{ height: 90, width: 80, transform: [{ translateX: -18 }] }}
+            className="rounded-2xl overflow-hidden absolute -z-10"
+          >
+            <Image
+              source={{
+                uri: uri2,
+              }}
+              style={{
+                resizeMode: 'cover',
+                flex: 1,
+              }}
+            />
+          </View>
+        )}
         <View className="flex-1 space-y-2">
           <View>
             <MyText
@@ -139,6 +170,11 @@ const OrderCard = ({
             <MyText className="text-[#575758] capitalize text-[14px]">|</MyText>
             <MyText className="text-[#575758] uppercase text-[14px]">
               id : {id}
+            </MyText>
+          </View>
+          <View>
+            <MyText className="text-[#575758] capitalize text-[14px]">
+              package - {numberOfPackage}
             </MyText>
           </View>
         </View>

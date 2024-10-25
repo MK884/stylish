@@ -44,7 +44,7 @@ const Banner = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
-          keyExtractor={(item, idx) => item?.ImgSrc as string}
+          keyExtractor={(item) => item?.ImgSrc}
           ref={ref}
           onScroll={(e) => {
             const x = parseInt(
