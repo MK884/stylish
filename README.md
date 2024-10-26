@@ -41,6 +41,14 @@ This application is a full-featured clothing store built with a modern and styli
 <img src="demo/store.png" width="30%"/>
 </div>
 
+## Tech-Stack
+
+- React-native (build with expo)
+- Nativewind
+- Nodejs
+- Express
+- MongoDB
+
 ## Credits & Disclaimer
 
 This application uses images and references to real brands solely for educational purposes to showcase product listings in a realistic setting. All brand images and logos are the property of their respective owners. This app is not affiliated with or endorsed by any brand featured within. The images are used for non-commercial, demonstration purposes only.
