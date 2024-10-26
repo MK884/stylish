@@ -14,11 +14,28 @@ This application is a full-featured clothing store built with a modern and styli
 - **Order Management**: Easily Manage orders and cancel at any time. Track your orders and get full summary of the order. Place single or multiple product at a time.
 - **Customizable Product Views - advance filters**: View options by category, size, color, and more for an easy shopping experience.
 
+## Demo
+
 <div  style="display: flex; flex-direction: 'row';">
-<img src="demo/market_place.gif" width="30%"/>
-<img src="demo/store.gif" width="30%"/>
-<img src="demo/product_page.gif" width="30%"/>
 <img src="demo/product_preview.gif" width="30%"/>
+<img src="demo/product_page.gif" width="30%"/>
+<img src="demo/store.gif" width="30%"/>
+<img src="demo/market_place.gif" width="30%"/>
+<img src="demo/order_placed.gif" width="30%"/>
+</div>
+
+## Screen shots
+
+<div  style="display: flex; flex-direction: 'row';">
+<img src="demo/feed.png" width="30%"/>
+<img src="demo/product.png" width="30%"/>
+<img src="demo/market.png" width="30%"/>
+<img src="demo/collections.png" width="30%"/>
+<img src="demo/cart.png" width="30%"/>
+<img src="demo/drawer.png" width="30%"/>
+<img src="demo/address.png" width="30%"/>
+<img src="demo/payment.png" width="30%"/>
+<img src="demo/order_summary.png" width="30%"/>
 </div>
 
 ## Credits & Disclaimer
