@@ -39,6 +39,9 @@ This application is a full-featured clothing store built with a modern and styli
 <img src="demo/orders.png" width="30%"/>
 <img src="demo/profile.png" width="30%"/>
 <img src="demo/store.png" width="30%"/>
+<img src="demo/register.png" width="30%"/>
+<img src="demo/login.png" width="30%"/>
+<img src="demo/forget.png" width="30%"/>
 </div>
 
 ## Tech-Stack
