@@ -29,11 +29,11 @@ const OrderCard = ({
   const stepperWidthArray = [0, 110, 210, 310];
   const stepperWidth = 210;
 
-  const uri = item.cartDetails[0].product[0].productImg[0].src;
+  const uri = item.cartDetails?.[0]?.product?.[0].productImg[0].src;
   const uri2 = item?.cartDetails?.[1]?.product?.[0]?.productImg?.[0].src;
-  const title = item.cartDetails[0].product[0].title;
-  const size = item.cartDetails[0].size;
-  const color = item.cartDetails[0].color;
+  const title = item.cartDetails?.[0]?.product?.[0].title;
+  const size = item.cartDetails?.[0]?.size;
+  const color = item.cartDetails?.[0]?.color;
   const id = item._id.slice(0, 8);
   const isPending = item.status === 'pending';
   const lastUpdate = new Date(item?.updatedAt).toLocaleString('en-GB', {
