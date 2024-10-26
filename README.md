@@ -24,7 +24,7 @@ This application is a full-featured clothing store built with a modern and styli
 <img src="demo/order_placed.gif" width="30%"/>
 </div>
 
-## Screen shots
+## Screenshots
 
 <div  style="display: flex; flex-direction: 'row';">
 <img src="demo/feed.png" width="30%"/>
@@ -36,6 +36,9 @@ This application is a full-featured clothing store built with a modern and styli
 <img src="demo/address.png" width="30%"/>
 <img src="demo/payment.png" width="30%"/>
 <img src="demo/order_summary.png" width="30%"/>
+<img src="demo/orders.png" width="30%"/>
+<img src="demo/profile.png" width="30%"/>
+<img src="demo/store.png" width="30%"/>
 </div>
 
 ## Credits & Disclaimer
